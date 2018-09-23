@@ -10,13 +10,45 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "LexicalAnalyzer/main.cpp"
-            timestampString = "559284382.1298"
+            timestampString = "559437655.947004"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "alphaNumericResult(vector&lt;char&gt; &amp;charVector)"
             landmarkType = "9">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "alphaNumericResult(std::__1::vector&lt;char, std::__1::allocator&lt;char&gt; &gt;&amp;)"
+                  moduleName = "LexicalAnalyzer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/morgc074/Desktop/personal/fall_2018/cs_236/LexicalAnalyzer/LexicalAnalyzer/main.cpp"
+                  timestampString = "559327464.363327"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "247"
+                  endingLineNumber = "247"
+                  offsetFromSymbolStart = "849">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "alphaNumericResult(std::__1::vector&lt;char, std::__1::allocator&lt;char&gt; &gt;&amp;)"
+                  moduleName = "LexicalAnalyzer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/morgc074/Desktop/personal/fall_2018/cs_236/LexicalAnalyzer/LexicalAnalyzer/main.cpp"
+                  timestampString = "559327464.366343"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "247"
+                  endingLineNumber = "247"
+                  offsetFromSymbolStart = "1276">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

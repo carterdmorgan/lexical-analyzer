@@ -15,186 +15,63 @@
 #include <vector>
 using namespace std;
 
-//void println(string name, string contents, int line) {
-//    cout << "(" << name << ",\"" << contents << "\"," << line << ")" << endl;
-//}
-//
-//void println(string name, char contents, int line) {
-//    cout << "(" << name << ",\"" << contents << "\"," << line << ")" << endl;
-//}
-
 bool isComma(char c) {
-//    const char VALUE = ',';
-//    const string TOKEN_TYPE = "COMMA";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == ',';
 }
 
 bool isPeriod(char c) {
-//    const char VALUE = '.';
-//    const string TOKEN_TYPE = "PERIOD";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == '.';
 }
 
 bool isQuestionMark(char c) {
-//    const char VALUE = '?';
-//    const string TOKEN_TYPE = "Q_MARK";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == '?';
 }
 
 bool isLeftParen(char c) {
-//    const char VALUE = '(';
-//    const string TOKEN_TYPE = "LEFT_PAREN";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == '(';
 }
 
 bool isRightParen(char c) {
-//    const char VALUE = ')';
-//    const string TOKEN_TYPE = "RIGHT_PAREN";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == ')';
 }
 
 bool isColon(char c) {
-//    const char VALUE = ':';
-//    const string TOKEN_TYPE = "COLON";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == ':';
 }
 
-// Detect colon dash
-
 bool isMultiply(char c) {
-//    const char VALUE = '*';
-//    const string TOKEN_TYPE = "MULTIPLY";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == '*';
 }
 
 bool isAdd(char c) {
-//    const char VALUE = '+';
-//    const string TOKEN_TYPE = "ADD";
-//    if(c == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return c == '+';
 }
 
 bool isSingleTerminatingToken(char c) {
-//    if(comma(c, line))
-//        return true;
-//    else if(period(c, line))
-//        return true;
-//    else if(questionMark(c, line))
-//        return true;
-//    else if(leftParen(c, line))
-//        return true;
-//    else if(rightParen(c, line))
-//        return true;
-//    else if(colon(c, line))
-//        return true;
-//    else if(multiply(c, line))
-//        return true;
-//    else if(add(c, line))
-//        return true;
-//    else {
-//        cout << "No match found" << endl;
-//        return false;
-//    }
     return isComma(c) || isPeriod(c) || isQuestionMark(c) || isLeftParen(c)
-                || isRightParen(c) || isColon(c) || isMultiply(c) || isAdd(c);
+                || isRightParen(c) || isMultiply(c) || isAdd(c);
 }
 
 bool isSchemes(string s) {
     const string VALUE = "Schemes";
-//    const string TOKEN_TYPE = "SCHEMES";
-//    if(s == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return s == VALUE;
 }
 
 bool isFacts(string s) {
     const string VALUE = "Facts";
-//    const string TOKEN_TYPE = "FACTS";
-//    if(s == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return s == VALUE;
 }
 
 bool isRules(string s) {
     const string VALUE = "Rules";
-//    const string TOKEN_TYPE = "RULES";
-//    if(s == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return s == VALUE;
 }
 
 bool isQueries(string s) {
     const string VALUE = "Queries";
-//    const string TOKEN_TYPE = "QUERIES";
-//    if(s == VALUE) {
-//        println(TOKEN_TYPE, VALUE, line);
-//        return true;
-//    }
-//
-//    return false;
     return s == VALUE;
 }
 
-// Detect id
 bool isIdEligible(char c) {
     return isalpha(c) || isdigit(c);
 }
@@ -229,6 +106,15 @@ bool isWord(string s) {
     return isSchemes(s) || isFacts(s) || isRules(s) || isQueries(s);
 }
 
+bool containsWord(string s) {
+    return s.find("Schemes") != string::npos || s.find("Facts") != string::npos ||
+        s.find("Rules") != string::npos || s.find("Queries") != string::npos;
+}
+
+bool containsWord(string s, string key) {
+    return s.find(key) != string::npos && s != key;
+}
+
 string alphaNumericResult(vector<char> &charVector) {
     // PRINT PURPOSES ONLY
 //    for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
@@ -237,8 +123,9 @@ string alphaNumericResult(vector<char> &charVector) {
     string result = "";
     for(char c : charVector) {
         if (isWord(result)) {
-            break;
+            return result;
         }
+        
         if (isIdEligible(c)) {
             result += c;
         }else{
@@ -248,30 +135,72 @@ string alphaNumericResult(vector<char> &charVector) {
             break;
         }
     }
+    
+    while(containsWord(result)) {
+        if(containsWord(result, "Schemes")) {
+            result = result.substr(0, result.find("Schemes"));
+        }else if (containsWord(result, "Facts")) {
+            result = result.substr(0, result.find("Facts"));
+        }else if (containsWord(result, "Rules")) {
+            result = result.substr(0, result.find("Rules"));
+        }else if (containsWord(result, "Queries")) {
+            result = result.substr(0, result.find("Queries"));
+        }
+        
+        if(isWord(result)) {
+            break;
+        }
+    }
+
     return result;
 }
 
-//// TODO: Get rid of working with number at front
-//bool evaluateAlphaNumericResult(string result, int line) {
-//    const string TOKEN_TYPE = "ID";
-//    if(schemes(result, line)) {
-//        return true;
-//    }else if(facts(result, line)) {
-//        return true;
-//    }else if(rules(result, line)) {
-//        return true;
-//    }else if(queries(result, line)) {
-//        return true;
-//    }else {
-//        println(TOKEN_TYPE, result, line);
-//        return true;
-//    }
-//}
+string determineColonDash(vector<char> &charVector) {
+    string result = string(1, charVector[0]);
+    
+    if(charVector[1] == '-') {
+        result += charVector[1];
+    }
+    
+    return result;
+}
+
+bool isSingleQuote(char c) {
+    return c == '\'';
+}
+
+bool isApostrophe(char c1, char c2) {
+    return c1 == '\'' && c2 == '\'';
+}
+
+bool isQuote(string s) {
+    return isSingleQuote(s.at(0)) && isSingleQuote(s.at(s.length()-1));
+}
+
+string determineQuote(vector<char> &charVector) {
+//        for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
+//            std::cout << *i << ' ';
+    string result = "";
+    for(int i = 0; i < charVector.size(); i++) {
+        char c = charVector[i];
+        result += c;
+        if(isSingleQuote(c) && i > 0) {
+            break;
+        }
+    }
+    return result;
+}
 
 string entryPoint(vector<char> &charVector) {
     char c = charVector[0];
     
-    if(isSingleTerminatingToken(c)) {
+    if(isSingleQuote(c)) {
+        return determineQuote(charVector);
+    }else if(isspace(c)) {
+        return string(1, c);
+    }else if(isColon(c)) {
+        return determineColonDash(charVector);
+    }else if(isSingleTerminatingToken(c)) {
         return string(1, c);
     }else {
         return alphaNumericResult(charVector);
@@ -280,7 +209,9 @@ string entryPoint(vector<char> &charVector) {
 
 void masterPrint(string s, int line) {
     string value = "UNDEFINED";
-    if(isSchemes(s)) {
+    if(isQuote(s)) {
+        value = "QUOTE";
+    }else if(isSchemes(s)) {
         value = "SCHEMES";
     }else if(isFacts(s)) {
         value = "FACTS";
@@ -306,30 +237,22 @@ void masterPrint(string s, int line) {
         value = "MULTIPLY";
     }else if(s == "+") {
         value = "ADD";
+    }else if(s == ":-") {
+        value = "COLON_DASH";
+    }else if(isspace(s.at(0))) {
+        return;
     }
     cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
 }
-
-void masterPrint(char s, int line) {
-    string value = "UNDEFINED";
-    
-    
-    cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
-}
-
 
 // Detect string
 
 // Detect comment
 
-// Detect whitespace
-
-// Detect undefined
-
 // Need to figure out what EOF is
 
 int main(int argc, const char * argv[]) {
-    string contents = ",.?():*+SchemesFactsRulesQueriesIdentifier1,Person,1stSchemesPerson,Person_Name";
+    string contents = ",.?():*+SchemesFactsRules'    QueriesIdent:-ifier1,Person,1st'Schemes:-:-:::::-,_:-:::-sPerson,Person_Name123QueriesFriendSchemes,Help123Facts!myQueriesl123";
     
     while(contents.length() > 0) {
         vector<char> vector(contents.begin(), contents.end());
