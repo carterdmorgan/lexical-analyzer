@@ -12,7 +12,9 @@
 #include <ctype.h>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 bool isComma(char c) {
@@ -173,7 +175,7 @@ bool isApostrophe(char c1, char c2) {
     return c1 == '\'' && c2 == '\'';
 }
 
-bool isQuote(string s) {
+bool isString(string s) {
     return isSingleQuote(s.at(0)) && isSingleQuote(s.at(s.length()-1));
 }
 
@@ -185,7 +187,12 @@ string determineQuote(vector<char> &charVector) {
         char c = charVector[i];
         result += c;
         if(isSingleQuote(c) && i > 0) {
-            break;
+            if(isApostrophe(c, charVector[i+1])) {
+                result += charVector[i+1];
+                i++;
+            }else {
+                break;
+            }
         }
     }
     return result;
@@ -209,8 +216,8 @@ string entryPoint(vector<char> &charVector) {
 
 void masterPrint(string s, int line) {
     string value = "UNDEFINED";
-    if(isQuote(s)) {
-        value = "QUOTE";
+    if(isString(s)) {
+        value = "STRING";
     }else if(isSchemes(s)) {
         value = "SCHEMES";
     }else if(isFacts(s)) {
@@ -245,21 +252,54 @@ void masterPrint(string s, int line) {
     cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
 }
 
-// Detect string
 
 // Detect comment
 
 // Need to figure out what EOF is
 
+// Debug print vector
+void printVector(vector<char> &charVector) {
+    for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
+        std::cout << *i << ' ';
+}
+
 int main(int argc, const char * argv[]) {
-    string contents = ",.?():*+SchemesFactsRules'    QueriesIdent:-ifier1,Person,1st'Schemes:-:-:::::-,_:-:::-sPerson,Person_Name123QueriesFriendSchemes,Help123Facts!myQueriesl123";
+    string line;
+    string finalResult = "";
+    ifstream myfile (argv[1]);
     
-    while(contents.length() > 0) {
-        vector<char> vector(contents.begin(), contents.end());
-        string result = entryPoint(vector);
-        contents.erase(0, result.length());
-        masterPrint(result, 1);
+    if (myfile.is_open())
+    {
+        while ( getline (myfile,line) )
+        {
+            finalResult += line;
+            finalResult += '\n';
+        }
+        myfile.close();
     }
+    
+    else cout << "Unable to open file" << endl;
+    
+//    string contents = ",.?():*+SchemesFa      ctsRules'    Querie''sIdent:-ifier1,Person,1st'Schemes:-:-:::::-,_:-:::-sPerson,Person_Name123QueriesFriendSchemes,Help123Facts!myQueriesl123Facts";
+    
+    int lineNumber = 1;
+    
+    while(finalResult.length() > 0) {
+//        if(finalResult.at(0) == '\n') {
+//            lineNumber++;
+//        }
+//        cout << "FINAL RESULT 1: " << finalResult << endl;
+        vector<char> vector(finalResult.begin(), finalResult.end());
+//        printVector(vector);
+        string result = entryPoint(vector);
+        finalResult.erase(0, result.length());
+//        cout << "FINAL RESULT 2: " << finalResult << endl;
+        masterPrint(result, lineNumber);
+        lineNumber += count(result.begin(), result.end(), '\n');
+    }
+    
+    cout << "(" << "EOF" << ",\"" << "" << "\"," << lineNumber << ")" << endl;
+//    cout << "LINE: " << finalResult << endl;
     
     return 0;
 }
