@@ -150,7 +150,7 @@ string alphaNumericResult(vector<char> &charVector) {
 //        }else if (containsWord(result, "Queries")) {
 //            result = result.substr(0, result.find("Queries"));
 //        }
-//        
+//
 //        if(isWord(result)) {
 //            break;
 //        }
@@ -208,11 +208,10 @@ bool isMultiline(string s) {
 
 bool isComment(string s) {
     if(isMultiline(s)) {
-        return s.at(0) == '#' && s.at(1) == '|' && s.at(s.length()-1) == '|' && s.at(s.length()-2) == '#';
+        return s.at(0) == '#' && s.at(1) == '|' && s.at(s.length()-1) == '#' && s.at(s.length()-2) == '|';
     }else{
         return s.at(0) == '#';
     }
-    return true;
 }
 
 bool isMultiline(vector<char> charVector) {
@@ -238,11 +237,11 @@ bool isCommentBeginning(char c) {
 }
 
 string determineComment(vector<char> &charVector) {
-    printVector(charVector);
     string result = "";
     for(int i = 0; i < charVector.size(); i++) {
         char c = charVector[i];
         if(isBlockComment(charVector) && i < charVector.size()-1) {
+            result += c;
             if(c == '|' && charVector[i+1] == '#') {
                 result += charVector[i+1];
                 break;
@@ -250,9 +249,11 @@ string determineComment(vector<char> &charVector) {
         }else{
             if(c == '\n' && i > 0) {
                 break;
+            }else{
+                result += c;
             }
         }
-        result += c;
+        
     }
     return result;
 }
