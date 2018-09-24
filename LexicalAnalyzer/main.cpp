@@ -118,10 +118,6 @@ bool containsWord(string s, string key) {
 }
 
 string alphaNumericResult(vector<char> &charVector) {
-    // PRINT PURPOSES ONLY
-//    for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
-//        std::cout << *i << ' ';
-    
     string result = "";
     for(char c : charVector) {
         if (isWord(result)) {
@@ -180,8 +176,6 @@ bool isString(string s) {
 }
 
 string determineQuote(vector<char> &charVector) {
-//        for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
-//            std::cout << *i << ' ';
     string result = "";
     for(int i = 0; i < charVector.size(); i++) {
         char c = charVector[i];
@@ -214,7 +208,7 @@ string entryPoint(vector<char> &charVector) {
     }
 }
 
-void masterPrint(string s, int line) {
+void masterPrint(ofstream &file, string s, int line, int &totalTokens) {
     string value = "UNDEFINED";
     if(isString(s)) {
         value = "STRING";
@@ -249,7 +243,8 @@ void masterPrint(string s, int line) {
     }else if(isspace(s.at(0))) {
         return;
     }
-    cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
+    totalTokens++;
+    file << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
 }
 
 
@@ -266,40 +261,41 @@ void printVector(vector<char> &charVector) {
 int main(int argc, const char * argv[]) {
     string line;
     string finalResult = "";
-    ifstream myfile (argv[1]);
+    ifstream inFile (argv[1]);
+    int totalTokens = 1;
     
-    if (myfile.is_open())
+    ofstream outFile ("output.txt");
+    
+    if (inFile.is_open())
     {
-        while ( getline (myfile,line) )
+        while ( getline (inFile,line) )
         {
             finalResult += line;
             finalResult += '\n';
         }
-        myfile.close();
+        inFile.close();
     }
     
     else cout << "Unable to open file" << endl;
     
-//    string contents = ",.?():*+SchemesFa      ctsRules'    Querie''sIdent:-ifier1,Person,1st'Schemes:-:-:::::-,_:-:::-sPerson,Person_Name123QueriesFriendSchemes,Help123Facts!myQueriesl123Facts";
-    
     int lineNumber = 1;
     
     while(finalResult.length() > 0) {
-//        if(finalResult.at(0) == '\n') {
-//            lineNumber++;
-//        }
-//        cout << "FINAL RESULT 1: " << finalResult << endl;
         vector<char> vector(finalResult.begin(), finalResult.end());
-//        printVector(vector);
         string result = entryPoint(vector);
         finalResult.erase(0, result.length());
-//        cout << "FINAL RESULT 2: " << finalResult << endl;
-        masterPrint(result, lineNumber);
+        
+        if (outFile.is_open()) {
+            masterPrint(outFile, result, lineNumber, totalTokens);
+        }
+        
         lineNumber += count(result.begin(), result.end(), '\n');
     }
     
-    cout << "(" << "EOF" << ",\"" << "" << "\"," << lineNumber << ")" << endl;
-//    cout << "LINE: " << finalResult << endl;
+    outFile << "(" << "EOF" << ",\"" << "" << "\"," << lineNumber << ")" << endl;
+    outFile << "Total Tokens = " << totalTokens;
+    
+    outFile.close();
     
     return 0;
 }
