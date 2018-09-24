@@ -17,6 +17,12 @@
 #include <algorithm>
 using namespace std;
 
+// Debug print vector
+void printVector(vector<char> &charVector) {
+    for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
+        std::cout << *i << ' ';
+}
+
 bool isComma(char c) {
     return c == ',';
 }
@@ -120,9 +126,9 @@ bool containsWord(string s, string key) {
 string alphaNumericResult(vector<char> &charVector) {
     string result = "";
     for(char c : charVector) {
-        if (isWord(result)) {
-            return result;
-        }
+//        if (isWord(result)) {
+//            return result;
+//        }
         
         if (isIdEligible(c)) {
             result += c;
@@ -134,21 +140,21 @@ string alphaNumericResult(vector<char> &charVector) {
         }
     }
     
-    while(containsWord(result)) {
-        if(containsWord(result, "Schemes")) {
-            result = result.substr(0, result.find("Schemes"));
-        }else if (containsWord(result, "Facts")) {
-            result = result.substr(0, result.find("Facts"));
-        }else if (containsWord(result, "Rules")) {
-            result = result.substr(0, result.find("Rules"));
-        }else if (containsWord(result, "Queries")) {
-            result = result.substr(0, result.find("Queries"));
-        }
-        
-        if(isWord(result)) {
-            break;
-        }
-    }
+//    while(containsWord(result)) {
+//        if(containsWord(result, "Schemes")) {
+//            result = result.substr(0, result.find("Schemes"));
+//        }else if (containsWord(result, "Facts")) {
+//            result = result.substr(0, result.find("Facts"));
+//        }else if (containsWord(result, "Rules")) {
+//            result = result.substr(0, result.find("Rules"));
+//        }else if (containsWord(result, "Queries")) {
+//            result = result.substr(0, result.find("Queries"));
+//        }
+//        
+//        if(isWord(result)) {
+//            break;
+//        }
+//    }
 
     return result;
 }
@@ -175,7 +181,7 @@ bool isString(string s) {
     return isSingleQuote(s.at(0)) && isSingleQuote(s.at(s.length()-1));
 }
 
-string determineQuote(vector<char> &charVector) {
+string determineString(vector<char> &charVector) {
     string result = "";
     for(int i = 0; i < charVector.size(); i++) {
         char c = charVector[i];
@@ -192,11 +198,72 @@ string determineQuote(vector<char> &charVector) {
     return result;
 }
 
+bool isMultiline(string s) {
+    int thresh = 0;
+    if(s.at(0) == '\n') {
+        thresh++;
+    }
+    return count(s.begin(), s.end(), '\n') > thresh;
+}
+
+bool isComment(string s) {
+    if(isMultiline(s)) {
+        return s.at(0) == '#' && s.at(1) == '|' && s.at(s.length()-1) == '|' && s.at(s.length()-2) == '#';
+    }else{
+        return s.at(0) == '#';
+    }
+    return true;
+}
+
+bool isMultiline(vector<char> charVector) {
+    int thresh = 0;
+    int count = 0;
+    if(charVector[0] == '\n') {
+        thresh++;
+    }
+    for(char c : charVector) {
+        if(c == '\n') {
+            count++;
+        }
+    }
+    return count > thresh;
+}
+
+bool isBlockComment(vector<char> charVector) {
+    return charVector[0] == '#' && charVector[1] == '|';
+}
+
+bool isCommentBeginning(char c) {
+    return c == '#';
+}
+
+string determineComment(vector<char> &charVector) {
+    printVector(charVector);
+    string result = "";
+    for(int i = 0; i < charVector.size(); i++) {
+        char c = charVector[i];
+        if(isBlockComment(charVector) && i < charVector.size()-1) {
+            if(c == '|' && charVector[i+1] == '#') {
+                result += charVector[i+1];
+                break;
+            }
+        }else{
+            if(c == '\n' && i > 0) {
+                break;
+            }
+        }
+        result += c;
+    }
+    return result;
+}
+
 string entryPoint(vector<char> &charVector) {
     char c = charVector[0];
     
-    if(isSingleQuote(c)) {
-        return determineQuote(charVector);
+    if(isCommentBeginning(c)) {
+        return determineComment(charVector);
+    }else if(isSingleQuote(c)) {
+        return determineString(charVector);
     }else if(isspace(c)) {
         return string(1, c);
     }else if(isColon(c)) {
@@ -210,7 +277,9 @@ string entryPoint(vector<char> &charVector) {
 
 void masterPrint(ofstream &file, string s, int line, int &totalTokens) {
     string value = "UNDEFINED";
-    if(isString(s)) {
+    if(isComment(s)) {
+        value = "COMMENT";
+    }else if(isString(s)) {
         value = "STRING";
     }else if(isSchemes(s)) {
         value = "SCHEMES";
@@ -251,12 +320,6 @@ void masterPrint(ofstream &file, string s, int line, int &totalTokens) {
 // Detect comment
 
 // Need to figure out what EOF is
-
-// Debug print vector
-void printVector(vector<char> &charVector) {
-    for (std::vector<char>::const_iterator i = charVector.begin(); i != charVector.end(); ++i)
-        std::cout << *i << ' ';
-}
 
 int main(int argc, const char * argv[]) {
     string line;
