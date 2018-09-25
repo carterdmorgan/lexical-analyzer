@@ -86,23 +86,19 @@ bool DecideTools::isSingleTerminatingToken(char c) {
 }
 
 bool DecideTools::isSchemes(string s) {
-    const string VALUE = "Schemes";
-    return s == VALUE;
+    return s == "Schemes";
 }
 
 bool DecideTools::isFacts(string s) {
-    const string VALUE = "Facts";
-    return s == VALUE;
+    return s == "Facts";
 }
 
 bool DecideTools::isRules(string s) {
-    const string VALUE = "Rules";
-    return s == VALUE;
+    return s == "Rules";
 }
 
 bool DecideTools::isQueries(string s) {
-    const string VALUE = "Queries";
-    return s == VALUE;
+    return s == "Queries";
 }
 
 bool DecideTools::isIdEligible(char c) {

@@ -14,40 +14,58 @@
 
 using namespace std;
 
+const string UNDEFINED = "UNDEFINED";
+const string COMMENT = "COMMENT";
+const string STRING = "STRING";
+const string SCHEMES = "SCHEMES";
+const string FACTS = "FACTS";
+const string RULES = "RULES";
+const string QUERIES = "QUERIES";
+const string ID = "ID";
+const string COMMA = "COMMA";
+const string PERIOD = "PERIOD";
+const string Q_MARK = "Q_MARK";
+const string LEFT_PAREN = "LEFT_PAREN";
+const string RIGHT_PAREN = "RIGHT_PAREN";
+const string COLON = "COLON";
+const string ADD = "ADD";
+const string MULTIPLY = "MULTIPLY";
+const string COLON_DASH = "COLON_DASH";
+
 void PrintTools::printResult(string s, int line, int &totalTokens) {
-    string value = "UNDEFINED";
+    string value = UNDEFINED;
     if(CommentTools::isComment(s)) {
-        value = "COMMENT";
+        value = COMMENT;
     }else if(StringTools::isString(s)) {
-        value = "STRING";
+        value = STRING;
     }else if(DecideTools::isSchemes(s)) {
-        value = "SCHEMES";
+        value = SCHEMES;
     }else if(DecideTools::isFacts(s)) {
-        value = "FACTS";
+        value = FACTS;
     }else if(DecideTools::isRules(s)) {
-        value = "RULES";
+        value = RULES;
     }else if(DecideTools::isQueries(s)) {
-        value = "QUERIES";
+        value = QUERIES;
     }else if(DecideTools::isId(s)){
-        value = "ID";
+        value = ID;
     }else if(DecideTools::isComma(s)) {
-        value = "COMMA";
+        value = COMMA;
     }else if(DecideTools::isPeriod(s)) {
-        value = "PERIOD";
+        value = PERIOD;
     }else if(DecideTools::isQuestionMark(s)) {
-        value = "Q_MARK";
+        value = Q_MARK;
     }else if(DecideTools::isLeftParen(s)) {
-        value = "LEFT_PAREN";
+        value = LEFT_PAREN;
     }else if(DecideTools::isRightParen(s)) {
-        value = "RIGHT_PAREN";
+        value = RIGHT_PAREN;
     }else if(DecideTools::isColon(s)) {
-        value = "COLON";
+        value = COLON;
     }else if(DecideTools::isMultiply(s)) {
-        value = "MULTIPLY";
+        value = MULTIPLY;
     }else if(DecideTools::isAdd(s)) {
-        value = "ADD";
+        value = ADD;
     }else if(DecideTools::isColonDash(s)) {
-        value = "COLON_DASH";
+        value = COLON_DASH;
     }else if(isspace(s.at(0))) {
         return;
     }
