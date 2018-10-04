@@ -138,7 +138,10 @@ bool DecideTools::isWord(string s) {
 string DecideTools::evaluateAlphaNumericResult(vector<char> &charVector) {
     string result = "";
     for(char c : charVector) {
-        if (DecideTools::isIdEligible(c)) {
+        if(isdigit(c)) {
+            result += c;
+            break;
+        }else if (DecideTools::isIdEligible(c)) {
             result += c;
         }else{
             if(result == "") {

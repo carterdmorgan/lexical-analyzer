@@ -32,13 +32,64 @@ const string ADD = "ADD";
 const string MULTIPLY = "MULTIPLY";
 const string COLON_DASH = "COLON_DASH";
 
-void PrintTools::printResult(string s, int line, int &totalTokens) {
+void PrintTools::printResult(string s, int line) {
     string value = UNDEFINED;
+    
     if(CommentTools::isComment(s)) {
         value = COMMENT;
     }else if(StringTools::isString(s)) {
         value = STRING;
-    }else if(DecideTools::isSchemes(s)) {
+    }
+    
+    if(value == UNDEFINED) {
+        value = evaluateKeys(s);
+    }
+    
+    
+    if (s.length() <= 1) {
+        switch(s.at(0)) {
+            case ',':
+                value = COMMA;
+                break;
+            case '.':
+                value = PERIOD;
+                break;
+            case '?':
+                value = Q_MARK;
+                break;
+            case '(':
+                value = LEFT_PAREN;
+                break;
+            case ')':
+                value = RIGHT_PAREN;
+                break;
+            case ':':
+                value = COLON;
+                break;
+            case '*':
+                value = MULTIPLY;
+                break;
+            case '+':
+                value = ADD;
+                break;
+            default:
+                break;
+        }
+    }else {
+        
+    }
+    
+    if(isspace(s.at(0))) {
+        return;
+    }
+    
+    cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
+}
+
+string PrintTools::evaluateKeys(string s) {
+    string value = UNDEFINED;
+    
+    if(DecideTools::isSchemes(s)) {
         value = SCHEMES;
     }else if(DecideTools::isFacts(s)) {
         value = FACTS;
@@ -48,27 +99,9 @@ void PrintTools::printResult(string s, int line, int &totalTokens) {
         value = QUERIES;
     }else if(DecideTools::isId(s)){
         value = ID;
-    }else if(DecideTools::isComma(s)) {
-        value = COMMA;
-    }else if(DecideTools::isPeriod(s)) {
-        value = PERIOD;
-    }else if(DecideTools::isQuestionMark(s)) {
-        value = Q_MARK;
-    }else if(DecideTools::isLeftParen(s)) {
-        value = LEFT_PAREN;
-    }else if(DecideTools::isRightParen(s)) {
-        value = RIGHT_PAREN;
-    }else if(DecideTools::isColon(s)) {
-        value = COLON;
-    }else if(DecideTools::isMultiply(s)) {
-        value = MULTIPLY;
-    }else if(DecideTools::isAdd(s)) {
-        value = ADD;
-    }else if(DecideTools::isColonDash(s)) {
+    }else if(s == ":-"){
         value = COLON_DASH;
-    }else if(isspace(s.at(0))) {
-        return;
     }
-    totalTokens++;
-    cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
+    
+    return value;
 }

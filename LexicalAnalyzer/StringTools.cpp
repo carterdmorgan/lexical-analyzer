@@ -22,7 +22,7 @@ bool StringTools::isString(string s) {
 
 string StringTools::determineString(vector<char> &charVector) {
     string result = "";
-    for(int i = 0; i < charVector.size(); i++) {
+    for(size_t i = 0; i < charVector.size(); i++) {
         char c = charVector[i];
         result += c;
         if(isSingleQuote(c) && i > 0) {

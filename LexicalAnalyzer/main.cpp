@@ -11,62 +11,36 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <sstream>
-#include <iostream>
 #include <fstream>
 #include <vector>
-#include <algorithm>
-#include "DecideTools.h"
-#include "StringTools.h"
-#include "CommentTools.h"
-#include "PrintTools.h"
+#include "Lex.h"
+#include "DatalogProgram.h"
+
 using namespace std;
 
-string determineResult(vector<char> &charVector) {
-    char c = charVector[0];
-    
-    if(CommentTools::isCommentBeginning(c)) {
-        return CommentTools::determineComment(charVector);
-    }else if(StringTools::isSingleQuote(c)) {
-        return StringTools::determineString(charVector);
-    }else if(isspace(c)) {
-        return string(1, c);
-    }else if(DecideTools::isColon(c)) {
-        return DecideTools::determineColonDash(charVector);
-    }else if(DecideTools::isSingleTerminatingToken(c)) {
-        return string(1, c);
-    }else {
-        return DecideTools::evaluateAlphaNumericResult(charVector);
-    }
-}
-
 int main(int argc, const char * argv[]) {
-    string line;
-    string finalResult = "";
+    // Create ten files and store their names in an array.  Loop through each of them.
+    // You will need to keep track of lines
+    // I don't think you'll need to keep track of total tokens
+    
+    // Loop begins
     string fileName = argv[1];
     ifstream inFile(fileName);
-    int totalTokens = 1;
-    int lineNumber = 1;
+    string input = "";
+    string line;
     
     if (inFile.is_open()) {
         while (getline(inFile,line)) {
-            finalResult += line;
-            finalResult += '\n';
+            input += line;
+            input += '\n';
         }
         inFile.close();
     }
     
-    while(finalResult.length() > 0) {
-        vector<char> vector(finalResult.begin(), finalResult.end());
-        string result = determineResult(vector);
-        finalResult.erase(0, result.length());
-        
-        PrintTools::printResult(result, lineNumber, totalTokens);
-        
-        lineNumber += count(result.begin(), result.end(), '\n');
-    }
+    Lex lex = Lex(input);
+    DatalogProgram datalogProgram = DatalogProgram(lex);
     
-    cout << "(" << "EOF" << ",\"" << "" << "\"," << lineNumber << ")" << endl;
-    cout << "Total Tokens = " << totalTokens;
+    // Loop ends
         
     return 0;
 }

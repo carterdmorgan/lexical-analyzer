@@ -7,6 +7,8 @@
 //
 
 #include "CommentTools.h"
+#include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -15,7 +17,8 @@ bool CommentTools::isMultiline(string s) {
     if(s.at(0) == '\n') {
         thresh++;
     }
-    return count(s.begin(), s.end(), '\n') > thresh;
+    int myCount = count(s.begin(), s.end(), '\n');
+    return myCount > thresh;
 }
 
 bool CommentTools::isComment(string s) {
@@ -36,9 +39,9 @@ bool CommentTools::isCommentBeginning(char c) {
 
 string CommentTools::determineComment(vector<char> &charVector) {
     string result = "";
-    for(int i = 0; i < charVector.size(); i++) {
+    for(size_t i = 0; i < charVector.size(); i++) {
         char c = charVector[i];
-        if(isBlockComment(charVector) && i < charVector.size()-1) {
+        if(isBlockComment(charVector) && i < charVector.size()) {
             result += c;
             if(c == '|' && charVector[i+1] == '#') {
                 result += charVector[i+1];

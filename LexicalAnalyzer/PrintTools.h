@@ -13,5 +13,6 @@ using namespace std;
 
 class PrintTools {
 public:
-    static void printResult(string s, int line, int &totalTokens);
+    static void printResult(string s, int line);
+    static string evaluateKeys(string s);
 };
