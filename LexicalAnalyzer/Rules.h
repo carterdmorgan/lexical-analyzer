@@ -1,5 +1,5 @@
 //
-//  Schemes.hpp
+//  Rules.hpp
 //  LexicalAnalyzer
 //
 //  Created by Morgan, Carter on 10/4/18.
@@ -7,11 +7,12 @@
 //
 
 #pragma once
+#include <string>
 #include "Lex.h"
 
 using namespace std;
 
-class Schemes {
+class Rules {
 public:
-    Schemes(Lex& lex);
+    Rules(Lex& lex);
 };

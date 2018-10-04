@@ -10,38 +10,22 @@
 #include "CommentTools.h"
 #include "StringTools.h"
 #include "DecideTools.h"
+#include "TokenType.h"
 #include <iostream>
 
 using namespace std;
 
-const string UNDEFINED = "UNDEFINED";
-const string COMMENT = "COMMENT";
-const string STRING = "STRING";
-const string SCHEMES = "SCHEMES";
-const string FACTS = "FACTS";
-const string RULES = "RULES";
-const string QUERIES = "QUERIES";
-const string ID = "ID";
-const string COMMA = "COMMA";
-const string PERIOD = "PERIOD";
-const string Q_MARK = "Q_MARK";
-const string LEFT_PAREN = "LEFT_PAREN";
-const string RIGHT_PAREN = "RIGHT_PAREN";
-const string COLON = "COLON";
-const string ADD = "ADD";
-const string MULTIPLY = "MULTIPLY";
-const string COLON_DASH = "COLON_DASH";
-
-void PrintTools::printResult(string s, int line) {
-    string value = UNDEFINED;
+// TODO: Change name
+string PrintTools::getTokenTypeValue(string s, Lex lex) {
+    string value = TokenType::UNDEFINED;
     
     if(CommentTools::isComment(s)) {
-        value = COMMENT;
+        value = TokenType::COMMENT;
     }else if(StringTools::isString(s)) {
-        value = STRING;
+        value = TokenType::STRING;
     }
     
-    if(value == UNDEFINED) {
+    if(value == TokenType::UNDEFINED) {
         value = evaluateKeys(s);
     }
     
@@ -49,58 +33,57 @@ void PrintTools::printResult(string s, int line) {
     if (s.length() <= 1) {
         switch(s.at(0)) {
             case ',':
-                value = COMMA;
+                value = TokenType::COMMA;
                 break;
             case '.':
-                value = PERIOD;
+                value = TokenType::PERIOD;
                 break;
             case '?':
-                value = Q_MARK;
+                value = TokenType::Q_MARK;
                 break;
             case '(':
-                value = LEFT_PAREN;
+                value = TokenType::LEFT_PAREN;
                 break;
             case ')':
-                value = RIGHT_PAREN;
+                value = TokenType::RIGHT_PAREN;
                 break;
             case ':':
-                value = COLON;
+                value = TokenType::COLON;
                 break;
             case '*':
-                value = MULTIPLY;
+                value = TokenType::MULTIPLY;
                 break;
             case '+':
-                value = ADD;
+                value = TokenType::ADD;
                 break;
             default:
                 break;
         }
-    }else {
-        
     }
     
-    if(isspace(s.at(0))) {
-        return;
-    }
+//    if(isspace(s.at(0))) {
+////        return TokenType::UNDEFINED; // I don't think this correct.  Before we were just returning nothing to exit the function.
+//        lex.advance(); // I think this is the correct way to do it
+//    }
     
-    cout << "(" << value << ",\"" << s << "\"," << line << ")" << endl;
+    return value;
 }
 
 string PrintTools::evaluateKeys(string s) {
-    string value = UNDEFINED;
+    string value = TokenType::UNDEFINED;
     
     if(DecideTools::isSchemes(s)) {
-        value = SCHEMES;
+        value = TokenType::SCHEMES;
     }else if(DecideTools::isFacts(s)) {
-        value = FACTS;
+        value = TokenType::FACTS;
     }else if(DecideTools::isRules(s)) {
-        value = RULES;
+        value = TokenType::RULES;
     }else if(DecideTools::isQueries(s)) {
-        value = QUERIES;
+        value = TokenType::QUERIES;
     }else if(DecideTools::isId(s)){
-        value = ID;
+        value = TokenType::ID;
     }else if(s == ":-"){
-        value = COLON_DASH;
+        value = TokenType::COLON_DASH;
     }
     
     return value;

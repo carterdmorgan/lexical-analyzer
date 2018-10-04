@@ -1,5 +1,5 @@
 //
-//  Schemes.hpp
+//  Utilities.hpp
 //  LexicalAnalyzer
 //
 //  Created by Morgan, Carter on 10/4/18.
@@ -8,10 +8,11 @@
 
 #pragma once
 #include "Lex.h"
+#include <string>
 
 using namespace std;
 
-class Schemes {
+class Utilities {
 public:
-    Schemes(Lex& lex);
+    static void checkFor(Lex& lex, string tokenType);
 };

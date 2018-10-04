@@ -8,5 +8,5 @@
 
 #include "DatalogProgram.h"
 
-DatalogProgram::DatalogProgram(Lex lex) : schemes(lex) {
+DatalogProgram::DatalogProgram(Lex& lex) : schemes(lex), facts(lex), rules(lex), queries(lex){
 }

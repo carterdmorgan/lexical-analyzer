@@ -9,12 +9,18 @@
 #pragma once
 #include "Lex.h"
 #include "Schemes.h"
+#include "Facts.h"
+#include "Rules.h"
+#include "Queries.h"
 
 using namespace std;
 
 class DatalogProgram {
 public:
-    DatalogProgram(Lex lex);
+    DatalogProgram(Lex& lex);
 private:
     Schemes schemes;
+    Facts facts;
+    Rules rules;
+    Queries queries;
 };

@@ -8,6 +8,9 @@
 
 #include "Lex.h"
 #include <algorithm>
+#include <iostream>
+#include <stdio.h>
+#include <ctype.h>
 #include "DecideTools.h"
 #include "StringTools.h"
 #include "CommentTools.h"
@@ -17,7 +20,7 @@ using namespace std;
 
 Lex::Lex(string input) {
     this->input = input;
-    this->lineNumber = 1;
+    this->line = 1;
     
 //    while(this->input.length() > 0) {
 //        string result = this->getCurrentToken();
@@ -27,16 +30,32 @@ Lex::Lex(string input) {
 }
 
 string Lex::getCurrentToken() {
-    vector<char> vector(this->input.begin(), this->input.end());
-    string result = determineResult(vector);
+    string result;
+    
+    do {
+        vector<char> vector(this->input.begin(), this->input.end());
+        result = determineResult(vector);
+        
+        if(isspace(result.at(0))) {
+            if(result.at(0) == '\n') {
+                line++;
+            }
+            this->input.erase(0,1);
+        }
+    } while(isspace(result.at(0)));
+    
     
     return result;
+}
+
+int Lex::getLine() {
+    return this->line;
 }
 
 void Lex::advance() {
     string current = this->getCurrentToken();
     this->input.erase(0, current.length());
-    this->lineNumber += count(current.begin(), current.end(), '\n');
+    this->line += count(current.begin(), current.end(), '\n');
 }
 
 string Lex::determineResult(vector<char> &charVector) {

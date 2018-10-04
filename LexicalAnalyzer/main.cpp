@@ -15,13 +15,12 @@
 #include <vector>
 #include "Lex.h"
 #include "DatalogProgram.h"
+#include "InvalidTokenException.cpp"
 
 using namespace std;
 
 int main(int argc, const char * argv[]) {
     // Create ten files and store their names in an array.  Loop through each of them.
-    // You will need to keep track of lines
-    // I don't think you'll need to keep track of total tokens
     
     // Loop begins
     string fileName = argv[1];
@@ -37,8 +36,15 @@ int main(int argc, const char * argv[]) {
         inFile.close();
     }
     
-    Lex lex = Lex(input);
-    DatalogProgram datalogProgram = DatalogProgram(lex);
+    try {
+        Lex lex = Lex(input);
+        DatalogProgram datalogProgram = DatalogProgram(lex);
+        cout << "Working great!" << endl;
+    }catch (InvalidTokenException e) {
+        cout << "Failure!" << endl;
+        cout << "  (" << e.getTokenType() << ",\"" << e.getToken() << "\"," << e.getLine() << ")" << endl;
+    }
+    
     
     // Loop ends
         

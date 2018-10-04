@@ -16,8 +16,9 @@ public:
     Lex(string input);
     string determineResult(vector<char> &charVector);
     string getCurrentToken();
+    int getLine();
     void advance();
 private:
-    int lineNumber;
+    int line;
     string input;
 };
