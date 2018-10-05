@@ -9,10 +9,13 @@
 #pragma once
 #include <string>
 #include "Lex.h"
+#include "Query.h"
 
 using namespace std;
 
 class Queries {
 public:
     Queries(Lex& lex);
+    Queries();
+    vector<Query> queriesList;
 };

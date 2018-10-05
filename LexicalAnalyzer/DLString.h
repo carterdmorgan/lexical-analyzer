@@ -9,11 +9,12 @@
 #pragma once
 #include <string>
 #include "Lex.h"
+#include "Parameter.h"
 
 using namespace std;
 
-class DLString {
+class DLString : public Parameter {
 public:
     string constant;
-    DLString(Lex& lext);
+    DLString(Lex& lex);
 };

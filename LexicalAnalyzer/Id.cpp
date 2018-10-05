@@ -9,11 +9,12 @@
 #include "Id.h"
 #include "Utilities.h"
 #include "TokenType.h"
+#include <iostream>
 
 using namespace std;
 
 Id::Id(Lex& lex) {
     Utilities::checkType(lex, TokenType::ID);
-    this->id = lex.getCurrentToken();
+    this->constant = lex.getCurrentToken();
     lex.advance();
 }

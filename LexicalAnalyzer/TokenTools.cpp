@@ -19,6 +19,10 @@ using namespace std;
 string TokenTools::getTokenTypeValue(string s) {
     string value = TokenType::UNDEFINED;
     
+    if(s.length() == 0) {
+        return TokenType::END;
+    }
+    
     if(CommentTools::isComment(s)) {
         value = TokenType::COMMENT;
     }else if(StringTools::isString(s)) {
@@ -60,12 +64,7 @@ string TokenTools::getTokenTypeValue(string s) {
                 break;
         }
     }
-    
-//    if(isspace(s.at(0))) {
-////        return TokenType::UNDEFINED; // I don't think this correct.  Before we were just returning nothing to exit the function.
-//        lex.advance(); // I think this is the correct way to do it
-//    }
-    
+
     return value;
 }
 

@@ -17,5 +17,6 @@ using namespace std;
 class Facts {
 public:
     Facts(Lex& lex);
+    Facts();
     vector<Fact> factList;
 };

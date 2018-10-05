@@ -1,18 +1,17 @@
 //
-//  Id.hpp
+//  Operator.hpp
 //  LexicalAnalyzer
 //
-//  Created by Morgan, Carter on 10/4/18.
+//  Created by Morgan, Carter on 10/5/18.
 //  Copyright © 2018 carterdmorgan. All rights reserved.
 //
 
 #pragma once
-#include <string>
 #include "Lex.h"
-#include "Parameter.h"
 
-class Id : public Parameter {
+class Operator {
 public:
-    Id(Lex& lex);
     string constant;
+    Operator(Lex& lex);
+    Operator();
 };

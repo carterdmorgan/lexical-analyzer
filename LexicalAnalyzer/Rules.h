@@ -9,10 +9,13 @@
 #pragma once
 #include <string>
 #include "Lex.h"
+#include "Rule.h"
 
 using namespace std;
 
 class Rules {
 public:
+    vector<Rule> rulesList;
     Rules(Lex& lex);
+    Rules();
 };

@@ -10,3 +10,5 @@
 
 DatalogProgram::DatalogProgram(Lex& lex) : schemes(lex), facts(lex), rules(lex), queries(lex){
 }
+
+DatalogProgram::DatalogProgram() {}

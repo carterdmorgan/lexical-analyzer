@@ -20,3 +20,5 @@ Schemes::Schemes(Lex& lex) {
         this->listOfSchemes.push_back(Scheme(lex));
     } while(TokenTools::getTokenTypeValue(lex.getCurrentToken()) == TokenType::ID || TokenTools::getTokenTypeValue(lex.getCurrentToken()) == TokenType::COMMENT);
 }
+
+Schemes::Schemes() {}

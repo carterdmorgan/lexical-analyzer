@@ -8,6 +8,7 @@
 
 #pragma once
 #include <string>
+#include "InvalidTokenException.cpp"
 
 using namespace std;
 

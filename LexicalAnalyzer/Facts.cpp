@@ -20,3 +20,5 @@ Facts::Facts(Lex& lex) {
         this->factList.push_back(Fact(lex));
     }
 }
+
+Facts::Facts() {}

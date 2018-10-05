@@ -8,8 +8,8 @@
 
 #include "Utilities.h"
 #include "TokenTools.h"
-#include "InvalidTokenException.cpp"
 #include "TokenType.h"
+#include "TokenTools.h"
 #include <iostream>
 
 void Utilities::checkFor(Lex& lex, string tokenType) {
@@ -21,7 +21,7 @@ void Utilities::checkFor(Lex& lex, string tokenType) {
     }
     
     if (TokenTools::getTokenTypeValue(current) != tokenType) {
-        cout << "LOOKING FOR: " << tokenType << endl;
+        cout << "check for looking for: " << tokenType << endl;
         throw InvalidTokenException(TokenTools::getTokenTypeValue(current), current, lex.getLine());
     }
     lex.advance();
@@ -36,6 +36,7 @@ void Utilities::checkType(Lex& lex, string tokenType) {
     }
     
     if (TokenTools::getTokenTypeValue(current) != tokenType) {
+        cout << "check type looking for: " << tokenType << endl;
         throw InvalidTokenException(TokenTools::getTokenTypeValue(current), current, lex.getLine());
     }
 }

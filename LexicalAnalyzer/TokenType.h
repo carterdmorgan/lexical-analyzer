@@ -30,4 +30,5 @@ public:
     static const string ADD;
     static const string MULTIPLY;
     static const string COLON_DASH;
+    static const string END;
 };

@@ -17,8 +17,8 @@ using namespace std;
 
 class DatalogProgram {
 public:
+    DatalogProgram();
     DatalogProgram(Lex& lex);
-private:
     Schemes schemes;
     Facts facts;
     Rules rules;

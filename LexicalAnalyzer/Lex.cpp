@@ -15,6 +15,7 @@
 #include "StringTools.h"
 #include "CommentTools.h"
 #include "TokenTools.h"
+#include "TokenType.h"
 
 using namespace std;
 
@@ -25,8 +26,12 @@ Lex::Lex(string input) {
 
 string Lex::getCurrentToken() {
     string result;
-        
+    
     do {
+        if(input.length() == 0) {
+            throw InvalidTokenException(TokenType::END, "", this->line);
+        }
+        
         vector<char> vector(this->input.begin(), this->input.end());
         result = determineResult(vector);
         
