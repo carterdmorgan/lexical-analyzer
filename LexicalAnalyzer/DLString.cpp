@@ -15,3 +15,7 @@ DLString::DLString(Lex& lex) {
     this->constant = lex.getCurrentToken();
     lex.advance();
 }
+
+string DLString::toString() {
+    return this->constant;
+}

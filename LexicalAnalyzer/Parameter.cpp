@@ -14,19 +14,23 @@
 #include "Expression.h"
 #include <iostream>
 
-Parameter Parameter::createParameter(Lex& lex) {
-    Parameter result;
+Parameter* Parameter::createParameter(Lex& lex) {
+    Parameter* result;
     string current = lex.getCurrentToken();
     string tokenType = TokenTools::getTokenTypeValue(lex, current);
     if(tokenType == TokenType::ID) {
-        result = Id(lex);
+        Id* id = new Id(lex);
+        result = id;
     }else if(tokenType == TokenType::STRING) {
-        result = DLString(lex);
+        DLString* dlString = new DLString(lex);
+        result = dlString;
     }else if(tokenType == TokenType::LEFT_PAREN) {
-        result = Expression(lex);
+        Expression* expression = new Expression(lex);
+        result = expression;
     }else {
         throw InvalidTokenException(tokenType, current, lex.getLine());
     }
     
     return result;
 }
+

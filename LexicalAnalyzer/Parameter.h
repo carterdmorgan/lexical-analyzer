@@ -13,5 +13,7 @@ using namespace std;
 
 class Parameter {
 public:
-    static Parameter createParameter(Lex& lex);
+    static Parameter* createParameter(Lex& lex);
+    virtual string toString()=0;
+    virtual ~Parameter() {}
 };

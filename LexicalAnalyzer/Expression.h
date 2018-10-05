@@ -13,8 +13,10 @@
 
 class Expression : public Parameter {
 public:
-    Parameter leftParameter;
+    Parameter* leftParameter;
     Operator exOperator;
-    Parameter rightParameter;
+    Parameter* rightParameter;
     Expression(Lex& lex);
+    ~Expression() {}
+    string toString();
 };

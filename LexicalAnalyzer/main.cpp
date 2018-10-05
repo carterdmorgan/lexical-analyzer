@@ -13,6 +13,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <set>
 #include "Lex.h"
 #include "TokenType.h"
 #include "DatalogProgram.h"
@@ -21,6 +22,7 @@
 #include "Fact.h"
 #include "Rule.h"
 #include "Query.h"
+#include "DLString.h"
 
 using namespace std;
 
@@ -29,26 +31,88 @@ void printDLProgram(DatalogProgram datalogProgram) {
     int factsSize = (int) datalogProgram.facts.factList.size();
     int rulesSize = (int) datalogProgram.rules.rulesList.size();
     int queriesSize = (int) datalogProgram.queries.queriesList.size();
-    int domainSize = 0;
+    
+    set<string> domains;
     
     cout << "Success!" << endl;
     cout << "Schemes(" << schemesSize << "):" << endl;
     for(Scheme scheme : datalogProgram.schemes.listOfSchemes) {
-        cout << "  " << scheme.id.constant << endl;
+        cout << "  " << scheme.id.toString() << "(";
+        for(int i = 0; i < scheme.ids.size(); i++) {
+            Id id = scheme.ids.at(i);
+            if(i < scheme.ids.size() - 1) {
+                cout << id.toString() << ',';
+            }else {
+                cout << id.toString();
+            }
+        }
+        cout << ")" << endl;
     }
     cout << "Facts(" << factsSize << "):" << endl;
     for(Fact fact : datalogProgram.facts.factList) {
-        cout << "  " << fact.id.constant << endl;
+        cout << "  " << fact.id.toString() << "(";
+        for(int i = 0; i < fact.listOfStrings.size(); i++) {
+            DLString dlString = fact.listOfStrings.at(i);
+            domains.insert(dlString.toString());
+            if(i < fact.listOfStrings.size() - 1) {
+                cout << dlString.toString() << ',';
+            }else {
+                cout << dlString.toString();
+            }
+        }
+        cout << ")." << endl;
     }
     cout << "Rules(" << rulesSize << "):" << endl;
     for(Rule rule : datalogProgram.rules.rulesList) {
-        cout << "  " << rule.headPredicate.id.constant << endl;
+        cout << "  " << rule.headPredicate.id.toString() << "(";
+        for(int i = 0; i < rule.headPredicate.ids.size(); i++) {
+            Id id = rule.headPredicate.ids.at(i);
+            if(i < rule.headPredicate.ids.size() - 1) {
+                cout << id.toString() << ',';
+            }else {
+                cout << id.toString();
+            }
+        }
+        cout << ") :- ";
+        for(int i = 0; i < rule.predicateList.size(); i++) {
+            Predicate predicate = rule.predicateList.at(i);
+            cout << predicate.id.toString() << "(";
+            for(int i = 0; i < predicate.parameters.size(); i++) {
+                Parameter* parameter = predicate.parameters.at(i);
+                if(i < predicate.parameters.size() - 1) {
+                    cout << parameter->toString() << ",";
+                }else {
+                    cout << parameter->toString();
+                }
+                
+                delete parameter;
+            }
+            if(i < rule.predicateList.size() - 1) {
+                cout << "),";
+            }else {
+                cout << ").";
+            }
+        }
     }
+    cout << endl;
     cout << "Queries(" << queriesSize << "):" << endl;
     for(Query query : datalogProgram.queries.queriesList) {
-        cout << "  " << query.Predicate::id.constant << endl;
+        cout << "  " << query.Predicate::id.toString() << "(";
+        for(int i = 0; i < query.Predicate::parameters.size(); i++) {
+            Parameter* parameter = query.Predicate::parameters.at(i);
+            if(i < query.Predicate::parameters.size() - 1) {
+                cout << parameter->toString() << ",";
+            }else {
+                cout << parameter->toString();
+            }
+        }
+        cout << ")?" << endl;
     }
-    cout << "Domain(" << domainSize << "):" << endl;
+    cout << "Domain(" << domains.size() << "):" << endl;
+    
+    for(string dlString : domains) {
+        cout << "  " << dlString << endl;
+    }
 }
 
 int main(int argc, const char * argv[]) {

@@ -14,9 +14,9 @@
 Operator::Operator(Lex& lex) {
     string current = lex.getCurrentToken();
     if(TokenTools::getTokenTypeValue(lex, current) == TokenType::ADD) {
-        this->constant = TokenType::ADD;
+        this->constant = "+";
     }else if(TokenTools::getTokenTypeValue(lex, current) == TokenType::MULTIPLY) {
-        this->constant = TokenType::MULTIPLY;
+        this->constant = "*";
     }else {
         throw InvalidTokenException(TokenTools::getTokenTypeValue(lex, current), current, lex.getLine());
     }
@@ -24,3 +24,4 @@ Operator::Operator(Lex& lex) {
 }
 
 Operator::Operator() {}
+

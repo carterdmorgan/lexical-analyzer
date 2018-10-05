@@ -8,6 +8,7 @@
 
 #pragma once
 #include "Lex.h"
+#include "Parameter.h"
 #include <string>
 
 using namespace std;

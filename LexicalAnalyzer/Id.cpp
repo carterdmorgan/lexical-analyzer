@@ -18,3 +18,7 @@ Id::Id(Lex& lex) {
     this->constant = lex.getCurrentToken();
     lex.advance();
 }
+
+string Id::toString() {
+    return this->constant;
+}

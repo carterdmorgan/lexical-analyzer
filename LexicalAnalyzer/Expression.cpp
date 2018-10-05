@@ -17,3 +17,9 @@ Expression::Expression(Lex& lex) {
     this->rightParameter = Parameter::createParameter(lex);
     Utilities::checkFor(lex, TokenType::RIGHT_PAREN);
 }
+
+string Expression::toString() {
+    return "(" + this->leftParameter->toString() + this->exOperator.constant + this->rightParameter->toString() + ")";
+}
+
+

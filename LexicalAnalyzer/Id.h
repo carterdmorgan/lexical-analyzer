@@ -14,5 +14,7 @@
 class Id : public Parameter {
 public:
     Id(Lex& lex);
+    ~Id() {}
     string constant;
+    string toString();
 };

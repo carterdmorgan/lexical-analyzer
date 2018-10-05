@@ -14,6 +14,6 @@
 class Predicate {
 public:
     Id id;
-    vector<Parameter> parameters;
+    vector<Parameter*> parameters;
     Predicate(Lex& lex);
 };

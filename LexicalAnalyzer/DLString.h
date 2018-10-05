@@ -17,4 +17,6 @@ class DLString : public Parameter {
 public:
     string constant;
     DLString(Lex& lex);
+    ~DLString() {}
+    string toString();
 };
