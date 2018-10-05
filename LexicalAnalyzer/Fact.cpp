@@ -10,6 +10,7 @@
 #include "Utilities.h"
 #include "TokenType.h"
 #include "TokenTools.h"
+#include <iostream>
 
 Fact::Fact(Lex& lex) : id(lex) {
     Utilities::checkFor(lex, TokenType::LEFT_PAREN);
