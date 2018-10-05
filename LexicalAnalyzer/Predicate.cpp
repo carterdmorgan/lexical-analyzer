@@ -12,7 +12,7 @@
 #include "TokenType.h"
 #include <iostream>
 
-Predicate::Predicate(Lex& lex) : id(lex) {
+Predicate::Predicate(Lex& lex) : id(lex){
     Utilities::checkFor(lex, TokenType::LEFT_PAREN);
     
     while(true) {

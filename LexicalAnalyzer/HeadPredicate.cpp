@@ -15,7 +15,8 @@ HeadPredicate::HeadPredicate(Lex& lex) : id(lex) {
     Utilities::checkFor(lex, TokenType::LEFT_PAREN);
     
     while(true) {
-        this->ids.push_back(Id(lex));
+        Id id = Id(lex);
+        this->ids.push_back(id);
     if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
         lex.advance();
     }

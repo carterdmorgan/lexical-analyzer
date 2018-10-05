@@ -17,6 +17,6 @@ public:
     Operator exOperator;
     Parameter* rightParameter;
     Expression(Lex& lex);
-    ~Expression() {}
+    ~Expression();
     string toString();
 };

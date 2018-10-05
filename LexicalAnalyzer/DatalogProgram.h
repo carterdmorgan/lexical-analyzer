@@ -23,4 +23,5 @@ public:
     Facts facts;
     Rules rules;
     Queries queries;
+    static void print(DatalogProgram& datalogProgram);
 };

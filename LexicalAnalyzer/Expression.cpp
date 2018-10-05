@@ -22,4 +22,9 @@ string Expression::toString() {
     return "(" + this->leftParameter->toString() + this->exOperator.constant + this->rightParameter->toString() + ")";
 }
 
+Expression::~Expression() {
+    delete this->leftParameter;
+    delete this->rightParameter;
+}
+
 
