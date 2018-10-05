@@ -19,6 +19,8 @@
 #include "InvalidTokenException.cpp"
 #include "Scheme.h"
 #include "Fact.h"
+#include "Rule.h"
+#include "Query.h"
 
 using namespace std;
 
@@ -39,7 +41,13 @@ void printDLProgram(DatalogProgram datalogProgram) {
         cout << "  " << fact.id.constant << endl;
     }
     cout << "Rules(" << rulesSize << "):" << endl;
+    for(Rule rule : datalogProgram.rules.rulesList) {
+        cout << "  " << rule.headPredicate.id.constant << endl;
+    }
     cout << "Queries(" << queriesSize << "):" << endl;
+    for(Query query : datalogProgram.queries.queriesList) {
+        cout << "  " << query.Predicate::id.constant << endl;
+    }
     cout << "Domain(" << domainSize << "):" << endl;
 }
 

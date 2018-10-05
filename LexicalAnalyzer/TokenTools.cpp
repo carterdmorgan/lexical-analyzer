@@ -16,26 +16,29 @@
 using namespace std;
 
 // TODO: Change name
-string TokenTools::getTokenTypeValue(string s) {
+string TokenTools::getTokenTypeValue(Lex& lex, string current) {
     string value = TokenType::UNDEFINED;
     
-    if(s.length() == 0) {
+    if(current.length() == 0) {
         return TokenType::END;
     }
     
-    if(CommentTools::isComment(s)) {
-        value = TokenType::COMMENT;
-    }else if(StringTools::isString(s)) {
+    while(CommentTools::isComment(current)) {
+        lex.advance();
+        current = lex.getCurrentToken();
+    }
+    
+    if(StringTools::isString(current)) {
         value = TokenType::STRING;
     }
     
     if(value == TokenType::UNDEFINED) {
-        value = evaluateKeys(s);
+        value = evaluateKeys(current);
     }
     
     
-    if (s.length() <= 1) {
-        switch(s.at(0)) {
+    if (current.length() <= 1) {
+        switch(current.at(0)) {
             case ',':
                 value = TokenType::COMMA;
                 break;

@@ -8,12 +8,13 @@
 
 #pragma once
 #include <string>
+#include "Lex.h"
 #include "InvalidTokenException.cpp"
 
 using namespace std;
 
 class TokenTools {
 public:
-    static string getTokenTypeValue(string s);
+    static string getTokenTypeValue(Lex& lex, string s);
     static string evaluateKeys(string s);
 };

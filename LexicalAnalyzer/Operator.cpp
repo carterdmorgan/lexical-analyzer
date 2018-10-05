@@ -13,12 +13,12 @@
 
 Operator::Operator(Lex& lex) {
     string current = lex.getCurrentToken();
-    if(TokenTools::getTokenTypeValue(current) == TokenType::ADD) {
+    if(TokenTools::getTokenTypeValue(lex, current) == TokenType::ADD) {
         this->constant = TokenType::ADD;
-    }else if(TokenTools::getTokenTypeValue(current) == TokenType::MULTIPLY) {
+    }else if(TokenTools::getTokenTypeValue(lex, current) == TokenType::MULTIPLY) {
         this->constant = TokenType::MULTIPLY;
     }else {
-        throw InvalidTokenException(TokenTools::getTokenTypeValue(current), current, lex.getLine());
+        throw InvalidTokenException(TokenTools::getTokenTypeValue(lex, current), current, lex.getLine());
     }
     lex.advance();
 }

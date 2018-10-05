@@ -17,7 +17,7 @@ Fact::Fact(Lex& lex) : id(lex) {
     
     while(true) {
         this->listOfStrings.push_back(DLString(lex));
-    if(TokenTools::getTokenTypeValue(lex.getCurrentToken()) != TokenType::COMMA) break;
+    if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
         lex.advance();
     }
     

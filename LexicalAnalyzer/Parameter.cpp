@@ -17,7 +17,7 @@
 Parameter Parameter::createParameter(Lex& lex) {
     Parameter result;
     string current = lex.getCurrentToken();
-    string tokenType = TokenTools::getTokenTypeValue(current);
+    string tokenType = TokenTools::getTokenTypeValue(lex, current);
     if(tokenType == TokenType::ID) {
         result = Id(lex);
     }else if(tokenType == TokenType::STRING) {

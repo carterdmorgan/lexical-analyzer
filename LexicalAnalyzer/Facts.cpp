@@ -16,7 +16,7 @@ Facts::Facts(Lex& lex) {
     Utilities::checkFor(lex, TokenType::FACTS);
     Utilities::checkFor(lex, TokenType::COLON);
     
-    while(TokenTools::getTokenTypeValue(lex.getCurrentToken()) == TokenType::ID || TokenTools::getTokenTypeValue(lex.getCurrentToken()) == TokenType::COMMENT) {
+    while(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) == TokenType::ID) {
         this->factList.push_back(Fact(lex));
     }
 }

@@ -16,7 +16,7 @@ Rule::Rule(Lex& lex) : headPredicate(lex) {
     
     while(true) {
         predicateList.push_back(Predicate(lex));
-    if(TokenTools::getTokenTypeValue(lex.getCurrentToken()) != TokenType::COMMA) break;
+    if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
         lex.advance();
     }
     

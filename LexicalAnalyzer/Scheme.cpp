@@ -19,7 +19,7 @@ Scheme::Scheme(Lex& lex) : id(lex) {
 
     while(true) {
         ids.push_back(Id(lex));
-    if (TokenTools::getTokenTypeValue(lex.getCurrentToken()) != TokenType::COMMA) break;
+    if (TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
         lex.advance();
     }
     

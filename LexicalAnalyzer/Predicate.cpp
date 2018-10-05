@@ -17,7 +17,7 @@ Predicate::Predicate(Lex& lex) : id(lex) {
     
     while(true) {
         this->parameters.push_back(Parameter::createParameter(lex));
-    if(TokenTools::getTokenTypeValue(lex.getCurrentToken()) != TokenType::COMMA) break;
+    if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
         lex.advance();
     }
     
