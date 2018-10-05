@@ -8,12 +8,11 @@
 
 #pragma once
 #include <string>
-#include "Lex.h"
 
 using namespace std;
 
-class PrintTools {
+class TokenTools {
 public:
-    static string getTokenTypeValue(string s, Lex lex);
+    static string getTokenTypeValue(string s);
     static string evaluateKeys(string s);
 };

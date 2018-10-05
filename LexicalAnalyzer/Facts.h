@@ -8,6 +8,8 @@
 
 #pragma once
 #include <string>
+#include <vector>
+#include "Fact.h"
 #include "Lex.h"
 
 using namespace std;
@@ -15,4 +17,5 @@ using namespace std;
 class Facts {
 public:
     Facts(Lex& lex);
+    vector<Fact> factList;
 };

@@ -15,4 +15,5 @@ using namespace std;
 class Utilities {
 public:
     static void checkFor(Lex& lex, string tokenType);
+    static void checkType(Lex& lex, string tokenType);
 };

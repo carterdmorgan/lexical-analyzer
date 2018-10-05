@@ -6,7 +6,7 @@
 //  Copyright © 2018 carterdmorgan. All rights reserved.
 //
 
-#include "PrintTools.h"
+#include "TokenTools.h"
 #include "CommentTools.h"
 #include "StringTools.h"
 #include "DecideTools.h"
@@ -16,7 +16,7 @@
 using namespace std;
 
 // TODO: Change name
-string PrintTools::getTokenTypeValue(string s, Lex lex) {
+string TokenTools::getTokenTypeValue(string s) {
     string value = TokenType::UNDEFINED;
     
     if(CommentTools::isComment(s)) {
@@ -69,7 +69,7 @@ string PrintTools::getTokenTypeValue(string s, Lex lex) {
     return value;
 }
 
-string PrintTools::evaluateKeys(string s) {
+string TokenTools::evaluateKeys(string s) {
     string value = TokenType::UNDEFINED;
     
     if(DecideTools::isSchemes(s)) {

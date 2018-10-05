@@ -14,24 +14,18 @@
 #include "DecideTools.h"
 #include "StringTools.h"
 #include "CommentTools.h"
-#include "PrintTools.h"
+#include "TokenTools.h"
 
 using namespace std;
 
 Lex::Lex(string input) {
     this->input = input;
     this->line = 1;
-    
-//    while(this->input.length() > 0) {
-//        string result = this->getCurrentToken();
-//        this->advance();
-//        PrintTools::printResult(result, this->lineNumber);
-//    }
 }
 
 string Lex::getCurrentToken() {
     string result;
-    
+        
     do {
         vector<char> vector(this->input.begin(), this->input.end());
         result = determineResult(vector);

@@ -1,5 +1,5 @@
 //
-//  Schemes.hpp
+//  Fact.hpp
 //  LexicalAnalyzer
 //
 //  Created by Morgan, Carter on 10/4/18.
@@ -8,13 +8,16 @@
 
 #pragma once
 #include <vector>
-#include "Scheme.h"
+#include <string>
 #include "Lex.h"
+#include "Id.h"
+#include "DLString.h"
 
 using namespace std;
 
-class Schemes {
+class Fact {
 public:
-    Schemes(Lex& lex);
-    vector<Scheme> listOfSchemes;
+    Fact(Lex& lex);
+    Id id;
+    vector<DLString> listOfStrings;
 };

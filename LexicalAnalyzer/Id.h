@@ -1,5 +1,5 @@
 //
-//  Schemes.hpp
+//  Id.hpp
 //  LexicalAnalyzer
 //
 //  Created by Morgan, Carter on 10/4/18.
@@ -7,14 +7,11 @@
 //
 
 #pragma once
-#include <vector>
-#include "Scheme.h"
+#include <string>
 #include "Lex.h"
 
-using namespace std;
-
-class Schemes {
+class Id {
 public:
-    Schemes(Lex& lex);
-    vector<Scheme> listOfSchemes;
+    Id(Lex& lex);
+    string id;
 };
