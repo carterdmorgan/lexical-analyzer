@@ -14,11 +14,29 @@
 Rule::Rule(Lex& lex) : headPredicate(lex) {
     Utilities::checkFor(lex, TokenType::COLON_DASH);
     
-    while(true) {
-        predicateList.push_back(Predicate(lex));
-    if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
-        lex.advance();
+    try {
+        while(true) {
+            Predicate predicate = Predicate(lex);
+            predicateList.push_back(predicate);
+            if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
+            lex.advance();
+        }
+    }catch(InvalidTokenException e) {
+        for(Predicate predicate : predicateList) {
+            for(Parameter* param : predicate.parameters) {
+                delete param;
+            }
+        }
     }
     
+    
     Utilities::checkFor(lex, TokenType::PERIOD);
+}
+
+Rule::~Rule() {
+//    for(Predicate predicate : predicateList) {
+//        for(Parameter* param : predicate.parameters) {
+//            delete param;
+//        }
+//    }
 }

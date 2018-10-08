@@ -9,6 +9,7 @@
 #include "DecideTools.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -137,10 +138,12 @@ bool DecideTools::isWord(string s) {
 
 string DecideTools::evaluateAlphaNumericResult(vector<char> &charVector) {
     string result = "";
-    for(char c : charVector) {
+    for(int i = 0; i < (int) charVector.size(); i++) {
+        char c = charVector.at(i);
         if(isdigit(c)) {
             result += c;
-            break;
+            if(i == 0)
+                break;
         }else if (DecideTools::isIdEligible(c)) {
             result += c;
         }else{

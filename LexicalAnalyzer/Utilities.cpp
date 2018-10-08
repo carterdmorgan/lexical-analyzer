@@ -10,6 +10,7 @@
 #include "TokenTools.h"
 #include "TokenType.h"
 #include "TokenTools.h"
+#include "Predicate.h"
 #include <iostream>
 
 void Utilities::checkFor(Lex& lex, string tokenType) {

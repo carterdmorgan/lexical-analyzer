@@ -10,10 +10,12 @@
 #include "Lex.h"
 #include "Predicate.h"
 #include "HeadPredicate.h"
+#include <deque>
 
 class Rule {
 public:
     HeadPredicate headPredicate;
     vector<Predicate> predicateList;
     Rule(Lex& lex);
+    ~Rule();
 };

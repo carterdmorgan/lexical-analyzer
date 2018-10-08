@@ -20,15 +20,21 @@ Queries::Queries(Lex& lex) {
         do {
             Query query = Query(lex);
             this->queriesList.push_back(query);
-        } while(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::ID);
+        } while(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) == TokenType::ID);
     }catch(InvalidTokenException e) {
         if(e.getTokenType() == TokenType::END) {
             return;
         }else {
+            for(Query query : queriesList) {
+                for(Parameter* param : query.parameters) {
+                    delete param;
+                }
+            }
             throw e;
         }
     }
 }
 
-Queries::Queries() {}
-
+Queries::~Queries() {
+    
+}

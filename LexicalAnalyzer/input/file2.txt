@@ -1,0 +1,9 @@
+#Tests what happens when only schemes are provided
+
+Schemes:
+  snap(S,N,A,P)
+  
+#|Expected output:
+Failure!
+  (EOF,"",10)
+|#

@@ -16,6 +16,7 @@ using namespace std;
 class Queries {
 public:
     Queries(Lex& lex);
-    Queries();
+    Queries() {}
+    ~Queries();
     vector<Query> queriesList;
 };

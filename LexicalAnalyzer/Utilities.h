@@ -9,6 +9,7 @@
 #pragma once
 #include "Lex.h"
 #include "Parameter.h"
+#include "Predicate.h"
 #include <string>
 
 using namespace std;

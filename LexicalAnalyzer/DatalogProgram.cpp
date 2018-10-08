@@ -7,13 +7,30 @@
 //
 
 #include "DatalogProgram.h"
+#include "InvalidTokenException.cpp"
 #include <set>
 #include <iostream>
 
-DatalogProgram::DatalogProgram(Lex& lex) : schemes(lex), facts(lex), rules(lex), queries(lex){
-}
-
 DatalogProgram::DatalogProgram() {}
+
+void DatalogProgram::process(Lex& lex) {
+    this->earlyExit = false;
+    try {
+        Schemes schemes = Schemes(lex);
+        this->schemes = schemes;
+        Facts facts = Facts(lex);
+        this->facts = facts;
+        Rules rules = Rules(lex);
+        this->rules = rules;
+        Queries queries = Queries(lex);
+        this->queries = queries;
+    }catch(InvalidTokenException e) {
+        this->earlyExit = true;
+        this->clean();
+        throw e;
+    }
+    
+}
 
 void DatalogProgram::print(DatalogProgram& datalogProgram) {
     int schemesSize = (int) datalogProgram.schemes.listOfSchemes.size();
@@ -73,17 +90,14 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
                 }else {
                     cout << parameter->toString();
                 }
-                
-                delete parameter;
             }
             if(i < (int) rule.predicateList.size() - 1) {
                 cout << "),";
             }else {
-                cout << ").";
+                cout << ")." << endl;
             }
         }
     }
-    cout << endl;
     cout << "Queries(" << queriesSize << "):" << endl;
     for(Query query : datalogProgram.queries.queriesList) {
         cout << "  " << query.Predicate::id.toString() << "(";
@@ -94,7 +108,6 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
             }else {
                 cout << parameter->toString();
             }
-            delete parameter;
         }
         cout << ")?" << endl;
     }
@@ -103,4 +116,58 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
     for(string dlString : domains) {
         cout << "  " << dlString << endl;
     }
+}
+
+void DatalogProgram::clean() {
+    cout << "CLEAN CALLED" << endl;
+    cout << "Schemes(" << schemes.listOfSchemes.size() << "):" << endl;
+    for(Scheme scheme : schemes.listOfSchemes) {
+        cout << "  " << scheme.id.toString() << "(";
+        for(int i = 0; i < (int) scheme.ids.size(); i++) {
+            Id id = scheme.ids.at(i);
+            if(i < (int) scheme.ids.size() - 1) {
+                cout << id.toString() << ',';
+            }else {
+                cout << id.toString();
+            }
+        }
+        cout << ")" << endl;
+    }
+    cout << "Facts(" << facts.factList.size() << "):" << endl;
+    for(Fact fact : facts.factList) {
+        cout << "  " << fact.id.toString() << "(";
+        for(int i = 0; i < (int) fact.listOfStrings.size(); i++) {
+            DLString dlString = fact.listOfStrings.at(i);
+//            domains.insert(dlString.toString());
+            if(i < (int) fact.listOfStrings.size() - 1) {
+                cout << dlString.toString() << ',';
+            }else {
+                cout << dlString.toString();
+            }
+        }
+        cout << ")." << endl;
+    }
+    for(Rule rule : this->rules.rulesList) {
+        for(int i = 0; i < (int) rule.predicateList.size(); i++) {
+            Predicate predicate = rule.predicateList.at(i);
+            for(int i = 0; i < (int) predicate.parameters.size(); i++) {
+                Parameter* parameter = predicate.parameters.at(i);
+                delete parameter;
+                cout << "deleted rule param" << endl;
+            }
+        }
+    }
+    
+    for(Query query : this->queries.queriesList) {
+        cout << "going through queries" << endl;
+        for(int i = 0; i < (int) query.Predicate::parameters.size(); i++) {
+            Parameter* parameter = query.Predicate::parameters.at(i);
+            delete parameter;
+        }
+    }
+}
+
+DatalogProgram::~DatalogProgram() {
+    if(!earlyExit)
+        this->clean();
 }

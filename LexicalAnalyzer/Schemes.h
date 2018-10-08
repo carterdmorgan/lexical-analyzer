@@ -16,6 +16,6 @@ using namespace std;
 class Schemes {
 public:
     Schemes(Lex& lex);
-    Schemes();
+    Schemes() {}
     vector<Scheme> listOfSchemes;
 };

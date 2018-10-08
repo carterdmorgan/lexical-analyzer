@@ -10,10 +10,12 @@
 #include "Lex.h"
 #include "Parameter.h"
 #include "Id.h"
+#include <deque>
 
 class Predicate {
 public:
     Id id;
     vector<Parameter*> parameters;
     Predicate(Lex& lex);
+    ~Predicate();
 };

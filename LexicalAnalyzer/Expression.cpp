@@ -9,6 +9,7 @@
 #include "Expression.h"
 #include "Utilities.h"
 #include "TokenType.h"
+#include <iostream>
 
 Expression::Expression(Lex& lex) {
     Utilities::checkFor(lex, TokenType::LEFT_PAREN);

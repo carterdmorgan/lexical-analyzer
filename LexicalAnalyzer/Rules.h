@@ -17,5 +17,6 @@ class Rules {
 public:
     vector<Rule> rulesList;
     Rules(Lex& lex);
-    Rules();
+    Rules() {}
+    ~Rules();
 };

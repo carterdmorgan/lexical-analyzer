@@ -42,8 +42,7 @@ string Lex::getCurrentToken() {
             this->input.erase(0,1);
         }
     } while(isspace(result.at(0)));
-    
-    
+        
     return result;
 }
 

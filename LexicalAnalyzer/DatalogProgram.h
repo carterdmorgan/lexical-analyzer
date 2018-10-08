@@ -19,9 +19,13 @@ class DatalogProgram {
 public:
     DatalogProgram();
     DatalogProgram(Lex& lex);
+    void process(Lex& lex);
+    void clean();
+    bool earlyExit;
     Schemes schemes;
     Facts facts;
     Rules rules;
     Queries queries;
     static void print(DatalogProgram& datalogProgram);
+    ~DatalogProgram();
 };

@@ -25,4 +25,4 @@ const string TokenType::COLON = "COLON";
 const string TokenType::ADD = "ADD";
 const string TokenType::MULTIPLY = "MULTIPLY";
 const string TokenType::COLON_DASH = "COLON_DASH";
-const string TokenType::END = "END";
+const string TokenType::END = "EOF";

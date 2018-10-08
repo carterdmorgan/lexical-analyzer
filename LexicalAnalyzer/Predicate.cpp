@@ -13,13 +13,31 @@
 #include <iostream>
 
 Predicate::Predicate(Lex& lex) : id(lex){
-    Utilities::checkFor(lex, TokenType::LEFT_PAREN);
     
-    while(true) {
-        this->parameters.push_back(Parameter::createParameter(lex));
-    if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
-        lex.advance();
+    
+    try {
+        Utilities::checkFor(lex, TokenType::LEFT_PAREN);
+        
+        while(true) {
+            this->parameters.push_back(Parameter::createParameter(lex));
+        if(TokenTools::getTokenTypeValue(lex, lex.getCurrentToken()) != TokenType::COMMA) break;
+            lex.advance();
+        }
+        
+        Utilities::checkFor(lex, TokenType::RIGHT_PAREN);
+    }catch(InvalidTokenException e) {
+        for(Parameter* param : parameters) {
+            cout << "deleting caught predicate param" << endl;
+            delete param;
+        }
+        throw e;
     }
-    
-    Utilities::checkFor(lex, TokenType::RIGHT_PAREN);
+}
+
+Predicate::~Predicate() {
+//    cout << "DESTRUCTOR CALLED" << endl;
+//    for(Parameter* param: this->parameters) {
+//        cout << "DELETING: " << param->toString() << endl;
+//        delete param;
+//    }
 }
