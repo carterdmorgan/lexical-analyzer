@@ -2,5 +2,5 @@
 
 #|Expected output:
 Failure!
-  (EOF,"",1)
+  (EOF,"",7)
 |#
