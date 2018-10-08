@@ -13,12 +13,15 @@ Facts: #comment
 
 Rules:
   HasSameAddress(X,Y) :- snap(A,X,B,C),snap(D,Y,B,(E+C)).
+  HasSameAddress2(A,Y) :- snap(A,X,C,C),snap(D,F,B,(E+C)).
 
 #comment
 
 Queries:
   HasSameAddress('Snoopy',Who)?
-  HasSameAddress('Charlie','Brown',2)?
+  HasSameAddress2('Charlie','Brown',Hello)?
+  HasSameAddress3('Lucy','Brown',2)?
+  HasSameAddress4('Hello','Bob',2)?
   
 #|Expected output:
 Success!
