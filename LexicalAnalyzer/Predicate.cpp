@@ -27,17 +27,10 @@ Predicate::Predicate(Lex& lex) : id(lex){
         Utilities::checkFor(lex, TokenType::RIGHT_PAREN);
     }catch(InvalidTokenException e) {
         for(Parameter* param : parameters) {
-            cout << "deleting caught predicate param" << endl;
             delete param;
         }
         throw e;
     }
 }
 
-Predicate::~Predicate() {
-//    cout << "DESTRUCTOR CALLED" << endl;
-//    for(Parameter* param: this->parameters) {
-//        cout << "DELETING: " << param->toString() << endl;
-//        delete param;
-//    }
-}
+Predicate::~Predicate() {}

@@ -38,32 +38,31 @@ int main(int argc, const char * argv[]) {
                             "input/file8.txt",
                             "input/file9.txt",};
 
-//    // Part 1
-//    for(int i = 0; i < (int) files.size(); i++) {
-//        cout << "\n-----FILE " << i << "------\n\n";
-//        string fileName = files.at(i);
-//        ifstream inFile(fileName);
-//        string input = "";
-//        string line;
-//
-//        if (inFile.is_open()) {
-//            while (getline(inFile,line)) {
-//                input += line;
-//                input += '\n';
-//            }
-//            inFile.close();
-//        }
-//
-//        try {
-//            Lex lex = Lex(input);
-//            DatalogProgram datalogProgram = DatalogProgram();
-//            datalogProgram.process(lex);
-//            DatalogProgram::print(datalogProgram);
-//        }catch (InvalidTokenException e) {
-//            cout << "Failure!" << endl;
-//            cout << "  (" << e.getTokenType() << ",\"" << e.getToken() << "\"," << e.getLine() << ")" << endl;
-//        }
-//    }
+    // Part 1
+    for(int i = 0; i < (int) files.size(); i++) {
+        string fileName = files.at(i);
+        ifstream inFile(fileName);
+        string input = "";
+        string line;
+
+        if (inFile.is_open()) {
+            while (getline(inFile,line)) {
+                input += line;
+                input += '\n';
+            }
+            inFile.close();
+        }
+
+        try {
+            Lex lex = Lex(input);
+            DatalogProgram datalogProgram = DatalogProgram();
+            datalogProgram.process(lex);
+            cout << "Success!" << endl;
+        }catch (InvalidTokenException e) {
+            cout << "Failure!" << endl;
+            cout << "  (" << e.getTokenType() << ",\"" << e.getToken() << "\"," << e.getLine() << ")" << endl;
+        }
+    }
     
     // Part 2
     string fileName = argv[1];

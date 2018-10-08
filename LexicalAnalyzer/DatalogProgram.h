@@ -27,5 +27,9 @@ public:
     Rules rules;
     Queries queries;
     static void print(DatalogProgram& datalogProgram);
+    static void printSchemes(DatalogProgram& datalogProgram);
+    static void printFacts(DatalogProgram& datalogProgram);
+    static void printRules(DatalogProgram& datalogProgram);
+    static void printQueries(DatalogProgram& datalogProgram);
     ~DatalogProgram();
 };

@@ -34,16 +34,4 @@ Rules::Rules(Lex& lex) {
     
 }
 
-Rules::~Rules() {
-//    for(Rule rule : rulesList) {
-//        cout << "going through rules" << endl;
-//        for(int i = 0; i < (int) rule.predicateList.size(); i++) {
-//            Predicate predicate = rule.predicateList.at(i);
-//            for(int i = 0; i < (int) predicate.parameters.size(); i++) {
-//                Parameter* parameter = predicate.parameters.at(i);
-//                delete parameter;
-//                cout << "deleted rule param" << endl;
-//            }
-//        }
-//    }
-}
+Rules::~Rules() {}

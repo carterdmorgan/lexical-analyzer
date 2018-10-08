@@ -15,7 +15,6 @@
 
 using namespace std;
 
-// TODO: Change name
 string TokenTools::getTokenTypeValue(Lex& lex, string current) {
     string value = TokenType::UNDEFINED;
     

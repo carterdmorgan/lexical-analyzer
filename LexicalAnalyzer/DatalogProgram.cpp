@@ -29,31 +29,14 @@ void DatalogProgram::process(Lex& lex) {
         this->clean();
         throw e;
     }
-    
 }
 
 void DatalogProgram::print(DatalogProgram& datalogProgram) {
-    int schemesSize = (int) datalogProgram.schemes.listOfSchemes.size();
     int factsSize = (int) datalogProgram.facts.factList.size();
-    int rulesSize = (int) datalogProgram.rules.rulesList.size();
-    int queriesSize = (int) datalogProgram.queries.queriesList.size();
-    
     set<string> domains;
     
     cout << "Success!" << endl;
-    cout << "Schemes(" << schemesSize << "):" << endl;
-    for(Scheme scheme : datalogProgram.schemes.listOfSchemes) {
-        cout << "  " << scheme.id.toString() << "(";
-        for(int i = 0; i < (int) scheme.ids.size(); i++) {
-            Id id = scheme.ids.at(i);
-            if(i < (int) scheme.ids.size() - 1) {
-                cout << id.toString() << ',';
-            }else {
-                cout << id.toString();
-            }
-        }
-        cout << ")" << endl;
-    }
+    printSchemes(datalogProgram);
     cout << "Facts(" << factsSize << "):" << endl;
     for(Fact fact : datalogProgram.facts.factList) {
         cout << "  " << fact.id.toString() << "(";
@@ -68,6 +51,38 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
         }
         cout << ")." << endl;
     }
+    
+    printRules(datalogProgram);
+    printQueries(datalogProgram);
+    cout << "Domain(" << domains.size() << "):" << endl;
+    
+    for(string dlString : domains) {
+        cout << "  " << dlString << endl;
+    }
+}
+
+void DatalogProgram::printSchemes(DatalogProgram& datalogProgram) {
+    int schemesSize = (int) datalogProgram.schemes.listOfSchemes.size();
+    cout << "Schemes(" << schemesSize << "):" << endl;
+    for(Scheme scheme : datalogProgram.schemes.listOfSchemes) {
+        cout << "  " << scheme.id.toString() << "(";
+        for(int i = 0; i < (int) scheme.ids.size(); i++) {
+            Id id = scheme.ids.at(i);
+            if(i < (int) scheme.ids.size() - 1) {
+                cout << id.toString() << ',';
+            }else {
+                cout << id.toString();
+            }
+        }
+        cout << ")" << endl;
+    }
+}
+void DatalogProgram::printFacts(DatalogProgram& datalogProgram) {
+    
+}
+
+void DatalogProgram::printRules(DatalogProgram& datalogProgram) {
+    int rulesSize = (int) datalogProgram.rules.rulesList.size();
     cout << "Rules(" << rulesSize << "):" << endl;
     for(Rule rule : datalogProgram.rules.rulesList) {
         cout << "  " << rule.headPredicate.id.toString() << "(";
@@ -98,6 +113,10 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
             }
         }
     }
+}
+
+void DatalogProgram::printQueries(DatalogProgram& datalogProgram) {
+    int queriesSize = (int) datalogProgram.queries.queriesList.size();
     cout << "Queries(" << queriesSize << "):" << endl;
     for(Query query : datalogProgram.queries.queriesList) {
         cout << "  " << query.Predicate::id.toString() << "(";
@@ -111,55 +130,20 @@ void DatalogProgram::print(DatalogProgram& datalogProgram) {
         }
         cout << ")?" << endl;
     }
-    cout << "Domain(" << domains.size() << "):" << endl;
-    
-    for(string dlString : domains) {
-        cout << "  " << dlString << endl;
-    }
 }
 
 void DatalogProgram::clean() {
-    cout << "CLEAN CALLED" << endl;
-    cout << "Schemes(" << schemes.listOfSchemes.size() << "):" << endl;
-    for(Scheme scheme : schemes.listOfSchemes) {
-        cout << "  " << scheme.id.toString() << "(";
-        for(int i = 0; i < (int) scheme.ids.size(); i++) {
-            Id id = scheme.ids.at(i);
-            if(i < (int) scheme.ids.size() - 1) {
-                cout << id.toString() << ',';
-            }else {
-                cout << id.toString();
-            }
-        }
-        cout << ")" << endl;
-    }
-    cout << "Facts(" << facts.factList.size() << "):" << endl;
-    for(Fact fact : facts.factList) {
-        cout << "  " << fact.id.toString() << "(";
-        for(int i = 0; i < (int) fact.listOfStrings.size(); i++) {
-            DLString dlString = fact.listOfStrings.at(i);
-//            domains.insert(dlString.toString());
-            if(i < (int) fact.listOfStrings.size() - 1) {
-                cout << dlString.toString() << ',';
-            }else {
-                cout << dlString.toString();
-            }
-        }
-        cout << ")." << endl;
-    }
     for(Rule rule : this->rules.rulesList) {
         for(int i = 0; i < (int) rule.predicateList.size(); i++) {
             Predicate predicate = rule.predicateList.at(i);
             for(int i = 0; i < (int) predicate.parameters.size(); i++) {
                 Parameter* parameter = predicate.parameters.at(i);
                 delete parameter;
-                cout << "deleted rule param" << endl;
             }
         }
     }
     
     for(Query query : this->queries.queriesList) {
-        cout << "going through queries" << endl;
         for(int i = 0; i < (int) query.Predicate::parameters.size(); i++) {
             Parameter* parameter = query.Predicate::parameters.at(i);
             delete parameter;

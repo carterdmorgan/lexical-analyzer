@@ -33,10 +33,4 @@ Rule::Rule(Lex& lex) : headPredicate(lex) {
     Utilities::checkFor(lex, TokenType::PERIOD);
 }
 
-Rule::~Rule() {
-//    for(Predicate predicate : predicateList) {
-//        for(Parameter* param : predicate.parameters) {
-//            delete param;
-//        }
-//    }
-}
+Rule::~Rule() {}
