@@ -13,4 +13,5 @@
 class Query : public Predicate {
 public:
     Query(Lex& lex);
+    void print();
 };

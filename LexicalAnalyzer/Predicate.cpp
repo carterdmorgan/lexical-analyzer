@@ -13,8 +13,6 @@
 #include <iostream>
 
 Predicate::Predicate(Lex& lex) : id(lex){
-    
-    
     try {
         Utilities::checkFor(lex, TokenType::LEFT_PAREN);
         

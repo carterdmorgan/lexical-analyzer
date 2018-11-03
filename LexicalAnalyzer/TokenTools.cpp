@@ -70,6 +70,56 @@ string TokenTools::getTokenTypeValue(Lex& lex, string current) {
     return value;
 }
 
+string TokenTools::getTokenTypeValue(string current) {
+    string value = TokenType::UNDEFINED;
+    
+    if(current.length() == 0) {
+        return TokenType::END;
+    }
+    
+    if(StringTools::isString(current)) {
+        value = TokenType::STRING;
+    }
+    
+    if(value == TokenType::UNDEFINED) {
+        value = evaluateKeys(current);
+    }
+    
+    
+    if (current.length() <= 1) {
+        switch(current.at(0)) {
+            case ',':
+                value = TokenType::COMMA;
+                break;
+            case '.':
+                value = TokenType::PERIOD;
+                break;
+            case '?':
+                value = TokenType::Q_MARK;
+                break;
+            case '(':
+                value = TokenType::LEFT_PAREN;
+                break;
+            case ')':
+                value = TokenType::RIGHT_PAREN;
+                break;
+            case ':':
+                value = TokenType::COLON;
+                break;
+            case '*':
+                value = TokenType::MULTIPLY;
+                break;
+            case '+':
+                value = TokenType::ADD;
+                break;
+            default:
+                break;
+        }
+    }
+    
+    return value;
+}
+
 string TokenTools::evaluateKeys(string s) {
     string value = TokenType::UNDEFINED;
     

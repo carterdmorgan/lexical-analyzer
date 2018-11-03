@@ -1,6 +1,0 @@
-(STRING,"'''bob'",1)
-(STRING,"' ''bob'",2)
-(STRING,"''",3)
-(STRING,"'bob'",3)
-(EOF,"",4)
-Total Tokens = 5

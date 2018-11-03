@@ -1,6 +1,0 @@
-#Tests what happens when no input is provided, aside from comments.
-
-#|Expected output:
-Failure!
-  (EOF,"",7)
-|#

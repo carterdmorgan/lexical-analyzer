@@ -16,5 +16,6 @@ using namespace std;
 class TokenTools {
 public:
     static string getTokenTypeValue(Lex& lex, string s);
+    static string getTokenTypeValue(string s);
     static string evaluateKeys(string s);
 };
