@@ -25,14 +25,25 @@ public:
     Table(string name);
     Table select(int col, string value);
     Table select(int col1, int col2);
-    Table project(int removeCol);
-    Table project(vector<int> removeCols);
+    Table project(string name);
+    Table project(vector<string> names);
+    Table project(int col);
+    Table project(vector<int> cols);
     Table project(int changeCol, int newCol);
     Table project(vector<int> changeCols, vector<int> newCols);
     Table rename(int changeCol, string columnName);
     Table rename(vector<int> changeCols, vector<string> columnNames);
+    bool containsAsSubset(Table other);
+    Table makeUnion(Table other);
+    Table naturalJoin(Table other);
     void addFact(Fact fact);
     bool operator==(Table other) const;
+    bool operator!=(Table other) const;
     void print();
     void printQueryResult(Query query);
+private:
+    Table cartesianProduct(Table table, Table other);
+    Table traditionalJoin(Table table, Table other, vector<string> results);
+    Table modifyHeader(Table table, Table other, vector<int> finalSkipColumns);
+    int determineIndex(Table table, string value);
 };

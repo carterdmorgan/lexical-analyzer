@@ -17,5 +17,6 @@ public:
     vector<string> values;
     bool operator==(Row other) const;
     bool operator< (const Row& other) const;
+    Row merge(Row other);
     bool recurse(int i, const Row& other) const;
 };

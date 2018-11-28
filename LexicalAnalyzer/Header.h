@@ -9,9 +9,12 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
 class Header : public std::vector<string> {
-
+public:
+    vector<string> compare(Header other);
+    void remove(string value);
 };

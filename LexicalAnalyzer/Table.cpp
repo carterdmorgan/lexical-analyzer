@@ -9,8 +9,11 @@
 #include "Table.h"
 #include "TokenType.h"
 #include "TokenTools.h"
+#include "NonUnionCompatibleException.cpp"
 #include <iostream>
 #include <algorithm>
+#include <set>
+#include <unordered_set>
 
 Table::Table(string name) {
     this->name = name;
@@ -48,6 +51,31 @@ Table Table::select(int col1, int col2) {
     
     return table;
 }
+Table Table::project(string name) {
+    Table table = *this;
+    ptrdiff_t pos = find(table.header.begin(), table.header.end(), name) - table.header.begin();
+    int iPos = (int) pos;
+    table = table.project(iPos);
+    
+    return table;
+}
+
+Table Table::project(vector<string> names) {
+    Table table = *this;
+    
+    vector<int> cols;
+    
+    for(int i = 0; i < (int) names.size(); i++) {
+        ptrdiff_t pos = distance(table.header.begin(), find(table.header.begin(), table.header.end(), names.at(i)));
+        int iPos = (int) pos;
+        cols.push_back(iPos);
+    }
+    
+    table = table.project(cols);
+    
+    return table;
+}
+
 Table Table::project(int col) {
     Table table = *this;
     vector<int> cols;
@@ -132,11 +160,8 @@ Table Table::project(vector<int> changeCols, vector<int> newCols) {
 }
 Table Table::rename(int changeCol, string columnName) {
     Table table = *this;
-//    cout << "uno" << endl;
     table.header.erase(table.header.begin() + changeCol);
-//    cout << "dos" << endl;
     table.header.insert(table.header.begin() + changeCol, columnName);
-//    cout << "tres" << endl;
     return table;
 }
 Table Table::rename(vector<int> changeCols, vector<string> columnNames) {
@@ -161,6 +186,168 @@ bool Table::operator==(Table other) const {
     }
     
     return true;
+}
+
+bool Table::operator!=(Table other) const {
+    return !(*this == other);
+}
+
+bool Table::containsAsSubset(Table other) {
+    Table table = *this;
+
+    for(Row tableRow : table.rows) {
+        for(Row otherRow : other.rows) {
+//            cout << "TABLE ROW:" << endl;
+//            for(string value : tableRow.values) {
+//                cout << value << ",";
+//            }
+//            cout << endl;
+//
+//            cout << "OTHER ROW:" << endl;
+//            for(string value : otherRow.values) {
+//                cout << value << ",";
+//            }
+//            cout << endl;
+            
+            if(tableRow.values == otherRow.values) {
+//                cout << "BROKE" << endl;
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+Table Table::makeUnion(Table other) {
+    Table table = *this;
+    
+//    cout << "\n\n\n\n\n\n\n\n";
+//
+//    cout << "ORIGINAL:" << endl;
+//    table.print();
+//
+//    cout << "OTHER:" << endl;
+//    other.print();
+    
+    if(this->header != other.header) {
+        throw NonUnionCompatibleException();
+    }
+
+    if(!table.containsAsSubset(other)) {
+        for(int i = 0; i < (int) other.rows.size(); i++) {
+            Row row = other.rows.at(i);
+            table.rows.push_back(row);
+        }
+    }
+    
+//    cout << "FINAL:" << endl;
+//    table.print();
+//
+//    cout << "\n\n\n\n\n\n\n\n";
+    
+    return table;
+}
+
+int Table::determineIndex(Table table, string value) {
+    for(int i = 0; i < (int) table.header.size(); i++) {
+        if(table.header.at(i) == value) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+Table Table::traditionalJoin(Table table, Table other, vector<string> results) {
+    vector<Row> rows;
+    vector<int> finalSkipColumns;
+    
+    for(int i = 0; i < (int) table.rows.size(); i++) {
+        for(int i2 = 0; i2 < (int) other.rows.size(); i2++) {
+            bool add = true;
+            vector<string> values;
+            vector<int> skipColumns;
+            for(string value : results) {
+                int tableIndex = determineIndex(table, value);
+                int otherIndex = determineIndex(other, value);
+                
+                skipColumns.push_back(otherIndex);
+                
+                if(table.rows.at(i).values.at(tableIndex) != other.rows.at(i2).values.at(otherIndex)) {
+                    add = false;
+                }
+            }
+            if(add) {
+                Row row = Row();
+                row.values = table.rows.at(i).values;
+                
+                vector<string> temp = other.rows.at(i2).values;
+                
+                sort(skipColumns.begin(), skipColumns.end(), greater<int>());
+                
+                for(int skip : skipColumns) {
+                    temp.erase(temp.begin() + skip);
+                }
+                
+                row.values.insert(row.values.end(), temp.begin(), temp.end());
+                
+                rows.push_back(row);
+            }
+            finalSkipColumns = skipColumns;
+        }
+    }
+    
+    table = modifyHeader(table, other, finalSkipColumns);
+    
+    table.rows.clear();
+    
+    table.rows = rows;
+    
+    return table;
+}
+
+Table Table::modifyHeader(Table table, Table other, vector<int> finalSkipColumns) {
+    sort(finalSkipColumns.begin(), finalSkipColumns.end(), greater<int>());
+    
+    for(int skip : finalSkipColumns) {
+        other.header.erase(other.header.begin() + skip);
+    }
+    
+    table.header.insert(table.header.end(), other.header.begin(), other.header.end());
+    
+    return table;
+}
+
+Table Table::cartesianProduct(Table table, Table other) {
+    for(int i = 0; i < (int) other.header.size(); i++) {
+        table.header.push_back(other.header.at(i));
+    }
+    
+    vector<Row> ogRows = table.rows;
+    
+    table.rows.clear();
+    
+    for(int i = 0; i < (int) ogRows.size(); i++) {
+        for(int i2 = 0; i2 < (int) other.rows.size(); i2++) {
+            Row row = ogRows.at(i);
+            Row newRow = row.merge(other.rows.at(i2));
+            table.rows.push_back(newRow);
+        }
+    }
+    
+    return table;
+}
+
+Table Table::naturalJoin(Table other) {
+    Table table = *this;
+    
+    vector<string> results = table.header.compare(other.header);
+    
+    if(results.size() == 0) {
+        return cartesianProduct(table, other);
+    }else {
+        return traditionalJoin(table, other, results);
+    }
 }
 
 void Table::addFact(Fact fact) {
@@ -197,7 +384,7 @@ void Table::print() {
 
 void Table::printQueryResult(Query query) {
     query.print();
-    
+        
     sort(this->rows.begin(), this->rows.end());
     
     if(this->rows.size() > 0) {

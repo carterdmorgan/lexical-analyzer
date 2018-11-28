@@ -16,11 +16,21 @@ bool Row::operator< (const Row& other) const {
     return this->recurse(0, other);
 }
 
+Row Row::merge(Row other) {
+    Row row = *this;
+    
+    for(int i = 0; i < (int) other.values.size(); i++) {
+        row.values.push_back(other.values.at(i));
+    }
+    
+    return row;
+}
+
 bool Row::recurse(int i, const Row& other) const {
     if(this->values.at(i) != other.values.at(i)) {
         return (this->values.at(i) < other.values.at(i));
     }else {
-        if(i < this->values.size()) {
+        if(i < (int) this->values.size()) {
             return this->recurse(i+1, other);
         }else {
             return (this->values.at(i) < other.values.at(i));
