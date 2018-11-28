@@ -1,0 +1,17 @@
+Schemes:
+slide(a,b,c)
+slip(a,b,c)
+
+Facts:
+slide('a','b','c').
+slip('b','c','d').
+slip('b','c','e').
+
+
+slip('b','e','f').
+
+Rules:
+slide(a,b,c):-slip(a,'c',c).
+
+Queries:
+slide(a,b,c)?

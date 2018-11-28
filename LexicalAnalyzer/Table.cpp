@@ -68,6 +68,9 @@ Table Table::project(vector<string> names) {
     for(int i = 0; i < (int) names.size(); i++) {
         ptrdiff_t pos = distance(table.header.begin(), find(table.header.begin(), table.header.end(), names.at(i)));
         int iPos = (int) pos;
+        if(iPos >= (int) table.header.size()) {
+            iPos = i;
+        }
         cols.push_back(iPos);
     }
     
@@ -230,11 +233,13 @@ void Table::reorder(vector<string>& vA, vector<int> vOrder) {
 
 Table Table::makeUnion(Table other) {
     Table table = *this;
-    
     vector<int> newOrder;
     
-    for(int i = 0; i < (int) other.header.size(); i++) {
-        ptrdiff_t pos = distance(other.header.begin(), find(other.header.begin(), other.header.end(), table.header.at(i)));
+    for(int i = 0; i < (int) table.header.size(); i++) {
+        if(TokenTools::getTokenTypeValue(other.header.at(i)) ==  TokenType::STRING) {
+            other.header.at(i) = table.header.at(i);
+        }
+        ptrdiff_t pos = distance(table.header.begin(), find(table.header.begin(), table.header.end(), other.header.at(i)));
         int iPos = (int) pos;
         newOrder.push_back(iPos);
     }
@@ -244,7 +249,7 @@ Table Table::makeUnion(Table other) {
     if(this->header != other.header) {
         throw NonUnionCompatibleException();
     }
-    
+
     for(int i = 0; i < (int) other.rows.size(); i++) {
         Row& row = other.rows.at(i);
         reorder(row.values, newOrder);
@@ -256,7 +261,7 @@ Table Table::makeUnion(Table other) {
             table.rows.push_back(row);
         }
     }
-    
+
     return table;
 }
 

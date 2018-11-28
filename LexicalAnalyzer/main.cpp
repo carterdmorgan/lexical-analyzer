@@ -105,6 +105,50 @@ bool relationsMatch(vector<Table>& oldRelations, vector<Table>& relations) {
     return true;
 }
 
+void populatePredicateTables(Rule& rule, vector<Table>& relations, vector<Table>& predicateTables) {
+    for(int i = 0; i < (int) rule.predicateList.size(); i++) {
+        Predicate& predicate = rule.predicateList.at(i);
+        Table predTable = relations.at(returnRelationsIndex(relations, predicate.id.toString()));
+        for(int j = 0; j < (int) predicate.parameters.size(); j++) {
+            predTable = predTable.rename(j, predicate.parameters.at(j)->toString());
+        }
+        
+        for(int j = 0; j < (int) predTable.header.size(); j++) {
+            if(TokenTools::getTokenTypeValue(predTable.header.at(j)) == TokenType::STRING) {
+                predTable = predTable.select(j, predTable.header.at(j));
+            }
+        }
+        predicateTables.push_back(predTable);
+    }
+}
+
+void joinPredicateTables(vector<Table>& predicateTables) {
+    while((int) predicateTables.size() > 1) {
+        Table& firstTable = predicateTables.at(0);
+        Table& nextTable = predicateTables.at(1);
+        firstTable = firstTable.naturalJoin(nextTable);
+        predicateTables.erase(predicateTables.begin() + 1);
+    }
+}
+
+void cleanDuplicates(Table& table) {
+    set<int> duplicateRows;
+    set<int>::reverse_iterator rit;
+    
+    for(int i = 0; i < (int) table.rows.size(); i++) {
+        for(int j = 0; j < (int) table.rows.size(); j++) {
+            if(table.rows.at(i).values == table.rows.at(j).values && i < j) {
+                duplicateRows.insert(i);
+                break;
+            }
+        }
+    }
+    
+    for (rit = duplicateRows.rbegin(); rit != duplicateRows.rend(); rit++) {
+        table.rows.erase(table.rows.begin() + *rit);
+    }
+}
+
 int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
     int passes = 0;
     bool match = false;
@@ -115,25 +159,9 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
             
             Table& table = relations.at(returnRelationsIndex(relations, rule.headPredicate.id.toString()));
             
-            for(int i = 0; i < (int) rule.predicateList.size(); i++) {
-                Predicate& predicate = rule.predicateList.at(i);
-                Table predTable = relations.at(returnRelationsIndex(relations, predicate.id.toString()));
-                for(int j = 0; j < (int) predicate.parameters.size(); j++) {
-                    predTable = predTable.rename(j, predicate.parameters.at(j)->toString());
-                }
-                predicateTables.push_back(predTable);
-            }
+            populatePredicateTables(rule, relations, predicateTables);
             
-            if((int) predicateTables.size() > 1) {
-                while((int) predicateTables.size() > 1) {
-                    Table& firstTable = predicateTables.at(0);
-                    Table& nextTable = predicateTables.at(1);
-                    firstTable = firstTable.naturalJoin(nextTable);
-                    predicateTables.erase(predicateTables.begin() + 1);
-                }
-            }
-            
-            
+            joinPredicateTables(predicateTables);
             
             vector<string> names;
             
@@ -141,28 +169,14 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
                 names.push_back(id.toString());
             }
             
+            
             Table& completePredTable = predicateTables.at(0);
+            
+            
             completePredTable = completePredTable.project(names);
             
-            // Clean completePredTable of duplicates
             
-            set<int> duplicateRows;
-            set<int>::reverse_iterator rit;
-            
-            for(int i = 0; i < (int) completePredTable.rows.size(); i++) {
-                for(int j = 0; j < (int) completePredTable.rows.size(); j++) {
-                    if(completePredTable.rows.at(i).values == completePredTable.rows.at(j).values && i < j) {
-                        duplicateRows.insert(i);
-                        break;
-                    }
-                }
-            }
-            
-            for (rit = duplicateRows.rbegin(); rit != duplicateRows.rend(); rit++) {
-                completePredTable.rows.erase(completePredTable.rows.begin() + *rit);
-            }
-            
-            
+            cleanDuplicates(completePredTable);
             
             Header temp = table.header;
             table.header.clear();
@@ -171,12 +185,9 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
                 table.header.push_back(name);
             }
             
-         
             table = table.makeUnion(completePredTable);
             
-            
             table.header = temp;
-            
         }
         
         match = relationsMatch(oldRelations, relations);

@@ -13,6 +13,8 @@
 #include "Row.h"
 #include "Fact.h"
 #include "Query.h"
+#include "TokenTools.h"
+#include "TokenType.h"
 #include <vector>
 
 using namespace std;
