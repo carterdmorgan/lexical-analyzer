@@ -7,6 +7,7 @@
 //
 
 #include "Row.h"
+#include <iostream>
 
 bool Row::operator==(Row other) const {
     return this->values == other.values;
@@ -30,7 +31,7 @@ bool Row::recurse(int i, const Row& other) const {
     if(this->values.at(i) != other.values.at(i)) {
         return (this->values.at(i) < other.values.at(i));
     }else {
-        if(i < (int) this->values.size()) {
+        if(i < (int) this->values.size() - 1) {
             return this->recurse(i+1, other);
         }else {
             return (this->values.at(i) < other.values.at(i));

@@ -69,7 +69,6 @@ void processQueries(DatalogProgram& datalogProgram, vector<Table>& relations) {
         vector<int> projections;
         vector<int> columns;
         vector<string> names;
-        
         for(int i = 0; i < (int) query.parameters.size(); i++) {
             if(TokenTools::getTokenTypeValue(query.parameters.at(i)->toString()) == TokenType::ID) {
                 map<string, int>::iterator it = ids.find(query.parameters.at(i)->toString());
@@ -86,17 +85,13 @@ void processQueries(DatalogProgram& datalogProgram, vector<Table>& relations) {
             }
         }
         
-        
         for(map<string, int>::iterator it = ids.begin(); it != ids.end(); it++) {
             names.push_back(it->first);
             columns.push_back(it->second);
         }
-        
         projections.erase( unique( projections.begin(), projections.end() ), projections.end() );
-        
         newTable = newTable.rename(columns, names);
         newTable = newTable.project(projections);
-        
         newTable.printQueryResult(query);
     }
 }
@@ -138,46 +133,53 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
                 }
             }
             
+            
+            
             vector<string> names;
             
             for(Id id : rule.headPredicate.ids) {
                 names.push_back(id.toString());
             }
             
-            Table completePredTable = predicateTables.at(0);
+            Table& completePredTable = predicateTables.at(0);
             completePredTable = completePredTable.project(names);
             
+            // Clean completePredTable of duplicates
+            
+            set<int> duplicateRows;
+            set<int>::reverse_iterator rit;
+            
+            for(int i = 0; i < (int) completePredTable.rows.size(); i++) {
+                for(int j = 0; j < (int) completePredTable.rows.size(); j++) {
+                    if(completePredTable.rows.at(i).values == completePredTable.rows.at(j).values && i < j) {
+                        duplicateRows.insert(i);
+                        break;
+                    }
+                }
+            }
+            
+            for (rit = duplicateRows.rbegin(); rit != duplicateRows.rend(); rit++) {
+                completePredTable.rows.erase(completePredTable.rows.begin() + *rit);
+            }
+            
+            
+            
             Header temp = table.header;
-            table.header = completePredTable.header;
+            table.header.clear();
             
-//            cout << "PRED TABLE:" << endl;
-//            completePredTable.print();
-//
-//            cout << "TABLE:" << endl;
-//            table.print();
+            for(string name : names) {
+                table.header.push_back(name);
+            }
             
-//            cout << "COMPLETE PRED TABLE" << endl;
-//            completePredTable.print();
-            
+         
             table = table.makeUnion(completePredTable);
             
+            
             table.header = temp;
+            
         }
         
         match = relationsMatch(oldRelations, relations);
-        
-//        cout << "RELATIONS MATCH?" << endl;
-//        cout << match << endl;
-//        cout << "OLD RELATIONS:" << endl;
-//        for(int i = 0; i < oldRelations.size(); i++) {
-//            oldRelations.at(i).print();
-//        }
-//        cout << endl;
-//        cout << "NEW RELATIONS:" << endl;
-//        for(int i = 0; i < relations.size(); i++) {
-//            relations.at(i).print();
-//        }
-//        cout << endl;
         
         oldRelations = relations;
         passes++;

@@ -192,46 +192,62 @@ bool Table::operator!=(Table other) const {
     return !(*this == other);
 }
 
-bool Table::containsAsSubset(Table other) {
+bool Table::containsAsSubset(Table& other) {
     Table table = *this;
-
-    for(Row tableRow : table.rows) {
-        for(Row otherRow : other.rows) {
-//            cout << "TABLE ROW:" << endl;
-//            for(string value : tableRow.values) {
-//                cout << value << ",";
-//            }
-//            cout << endl;
-//
-//            cout << "OTHER ROW:" << endl;
-//            for(string value : otherRow.values) {
-//                cout << value << ",";
-//            }
-//            cout << endl;
-            
+    set<int> matchingRows;
+    
+    for(int i = 0; i < (int) table.rows.size(); i++) {
+        Row tableRow = table.rows.at(i);
+        for(int j = 0; j < (int) other.rows.size(); j++) {
+            Row otherRow = other.rows.at(j);
             if(tableRow.values == otherRow.values) {
-//                cout << "BROKE" << endl;
-                return true;
+                matchingRows.insert(j);
             }
         }
     }
     
-    return false;
+    set<int>::reverse_iterator rit;
+    
+    for (rit = matchingRows.rbegin(); rit != matchingRows.rend(); rit++) {
+        other.rows.erase(other.rows.begin() + *rit);
+    }
+    
+    return (int) other.rows.size() == 0;
+}
+
+void Table::reorder(vector<string>& vA, vector<int> vOrder) {
+    // for all elements to put in place
+    for(int i = 0; i < (int) vA.size() - 1; ++i) {
+        // while the element i is not yet in place
+        while(i != vOrder[i]) {
+            // swap it with the element at its final place
+            int alt = vOrder[i];
+            swap(vA[i], vA[alt]);
+            swap(vOrder[i], vOrder[alt]);
+        }
+    }
 }
 
 Table Table::makeUnion(Table other) {
     Table table = *this;
     
-//    cout << "\n\n\n\n\n\n\n\n";
-//
-//    cout << "ORIGINAL:" << endl;
-//    table.print();
-//
-//    cout << "OTHER:" << endl;
-//    other.print();
+    vector<int> newOrder;
+    
+    for(int i = 0; i < (int) other.header.size(); i++) {
+        ptrdiff_t pos = distance(other.header.begin(), find(other.header.begin(), other.header.end(), table.header.at(i)));
+        int iPos = (int) pos;
+        newOrder.push_back(iPos);
+    }
+    
+    reorder(other.header, newOrder);
     
     if(this->header != other.header) {
         throw NonUnionCompatibleException();
+    }
+    
+    for(int i = 0; i < (int) other.rows.size(); i++) {
+        Row& row = other.rows.at(i);
+        reorder(row.values, newOrder);
     }
 
     if(!table.containsAsSubset(other)) {
@@ -240,11 +256,6 @@ Table Table::makeUnion(Table other) {
             table.rows.push_back(row);
         }
     }
-    
-//    cout << "FINAL:" << endl;
-//    table.print();
-//
-//    cout << "\n\n\n\n\n\n\n\n";
     
     return table;
 }
@@ -384,9 +395,9 @@ void Table::print() {
 
 void Table::printQueryResult(Query query) {
     query.print();
-        
-    sort(this->rows.begin(), this->rows.end());
     
+    sort(this->rows.begin(), this->rows.end());
+
     if(this->rows.size() > 0) {
         cout << " Yes(" << (int) this->rows.size() << ")" << endl;
     }else {

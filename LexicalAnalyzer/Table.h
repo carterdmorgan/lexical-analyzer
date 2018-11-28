@@ -33,7 +33,8 @@ public:
     Table project(vector<int> changeCols, vector<int> newCols);
     Table rename(int changeCol, string columnName);
     Table rename(vector<int> changeCols, vector<string> columnNames);
-    bool containsAsSubset(Table other);
+    void reorder(vector<string>& vA, vector<int> vOrder);
+    bool containsAsSubset(Table& other);
     Table makeUnion(Table other);
     Table naturalJoin(Table other);
     void addFact(Fact fact);
