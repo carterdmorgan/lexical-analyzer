@@ -1,4 +1,25 @@
-Schemes populated after 6 passes through the Rules.
+Dependency Graph
+R0:
+R1:R0,R1
+R2:
+R3:R2
+R4:
+R5:R4,R5
+R6:R6,R7,R8
+R7:R6,R7,R8
+R8:
+
+Rule Evaluation
+1 passes: R8
+5 passes: R6,R7
+1 passes: R4
+5 passes: R5
+1 passes: R2
+1 passes: R3
+1 passes: R0
+2 passes: R1
+
+Query Evaluation
 Symmetric(Q,R)? Yes(18)
   Q='1', R='2'
   Q='10', R='9'

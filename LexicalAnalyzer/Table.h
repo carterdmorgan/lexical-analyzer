@@ -16,6 +16,7 @@
 #include "TokenTools.h"
 #include "TokenType.h"
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ class Table {
 public:
     string name;
     Header header;
-    vector<Row> rows;
+    set<Row> rows;
     Table(string name);
     Table select(int col, string value);
     Table select(int col1, int col2);
@@ -31,8 +32,8 @@ public:
     Table project(vector<string> names);
     Table project(int col);
     Table project(vector<int> cols);
-    Table project(int changeCol, int newCol);
-    Table project(vector<int> changeCols, vector<int> newCols);
+//    Table project(int changeCol, int newCol);
+//    Table project(vector<int> changeCols, vector<int> newCols);
     Table rename(int changeCol, string columnName);
     Table rename(vector<int> changeCols, vector<string> columnNames);
     void reorder(vector<string>& vA, vector<int> vOrder);

@@ -14,7 +14,7 @@ using namespace std;
 
 class Row {
 public:
-    vector<string> values;
+    mutable vector<string> values;
     bool operator==(Row other) const;
     bool operator< (const Row& other) const;
     Row merge(Row other);

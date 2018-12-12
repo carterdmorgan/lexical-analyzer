@@ -13,9 +13,13 @@
 #include <deque>
 
 class Rule {
+private:
+    bool comparePredicateLists(Rule other) const;
 public:
     HeadPredicate headPredicate;
     vector<Predicate> predicateList;
+    bool operator==(Rule other) const;
+    bool operator< (const Rule& other) const;
     Rule(Lex& lex);
     ~Rule();
 };

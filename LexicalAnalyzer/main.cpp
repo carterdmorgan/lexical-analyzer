@@ -28,6 +28,7 @@
 #include "Header.h"
 #include "Table.h"
 #include "NonUnionCompatibleException.cpp"
+#include "Graph.h"
 
 using namespace std;
 
@@ -131,30 +132,75 @@ void joinPredicateTables(vector<Table>& predicateTables) {
     }
 }
 
-void cleanDuplicates(Table& table) {
-    set<int> duplicateRows;
-    set<int>::reverse_iterator rit;
+int returnRuleNumber(DatalogProgram& datalogProgram, Rule& rule) {
+    for(int i = 0; i < (int) datalogProgram.rules.rulesList.size(); i++) {
+        if(datalogProgram.rules.rulesList.at(i) == rule) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+map<int, Rule> createRulesMap(DatalogProgram& datalogProgram) {
+    map<int, Rule> rulesMap;
+    for(int i = 0; i < (int) datalogProgram.rules.rulesList.size(); i++) {
+        rulesMap.insert(pair<int, Rule>(i, datalogProgram.rules.rulesList.at(i)));
+    }
+    return rulesMap;
+}
+
+Graph createRulesGraph(DatalogProgram& datalogProgram, map<int, Rule>& rulesMap) {
+    Graph graph = Graph((int) datalogProgram.rules.rulesList.size());
     
-    for(int i = 0; i < (int) table.rows.size(); i++) {
-        for(int j = 0; j < (int) table.rows.size(); j++) {
-            if(table.rows.at(i).values == table.rows.at(j).values && i < j) {
-                duplicateRows.insert(i);
-                break;
+    for(int i = 0; i < (int) datalogProgram.rules.rulesList.size(); i++) {
+        Rule& rule = datalogProgram.rules.rulesList.at(i);
+        for(Predicate predicate : rule.predicateList) {
+            for(int j = 0; j < (int) rulesMap.size(); j++) {
+                if(predicate.id.toString() == rulesMap.at(j).headPredicate.id.toString()) {
+                    graph.addEdge(i, j);
+                }
             }
         }
     }
     
-    for (rit = duplicateRows.rbegin(); rit != duplicateRows.rend(); rit++) {
-        table.rows.erase(table.rows.begin() + *rit);
-    }
+    return graph;
 }
 
-int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
-    int passes = 0;
+void printFixedPointEvaluationResults(DatalogProgram& datalogProgram, vector<Rule>& rules, int& passes) {
+    cout << passes << " passes: ";
+    for(int i = 0; i < (int) rules.size(); i++) {
+        Rule& rule = rules.at(i);
+        if(i < (int) rules.size() - 1) {
+            cout << "R" << returnRuleNumber(datalogProgram, rule) << ",";
+        }else {
+            cout << "R" << returnRuleNumber(datalogProgram, rule);
+        }
+    }
+    cout << endl;
+}
+
+void fixedPointEvaluation(DatalogProgram& datalogProgram, map<int, Rule>& rulesMap, vector<int>& sccVector, vector<Table>& relations) {
+    // evaluate to a fixed point
     bool match = false;
     vector<Table> oldRelations = relations;
+    vector<Rule> rules;
+    
+    for(int j = 0; j < (int) sccVector.size(); j++) {
+        int index = sccVector.at(j);
+        Rule rule = rulesMap.at(index);
+        
+        for(int i = 0; i < (int) datalogProgram.rules.rulesList.size(); i++) {
+            if(datalogProgram.rules.rulesList.at(i) == rule) {
+                rules.push_back(datalogProgram.rules.rulesList.at(i));
+                break;
+            }
+        }
+        
+    }
+    
+    int passes = 0;
     while(!match) {
-        for(Rule rule : datalogProgram.rules.rulesList) {
+        for(Rule rule : rules) {
             vector<Table> predicateTables;
             
             Table& table = relations.at(returnRelationsIndex(relations, rule.headPredicate.id.toString()));
@@ -169,14 +215,9 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
                 names.push_back(id.toString());
             }
             
-            
             Table& completePredTable = predicateTables.at(0);
             
-            
             completePredTable = completePredTable.project(names);
-            
-            
-            cleanDuplicates(completePredTable);
             
             Header temp = table.header;
             table.header.clear();
@@ -196,7 +237,119 @@ int processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
         passes++;
     }
     
-    return passes;
+    printFixedPointEvaluationResults(datalogProgram, rules, passes);
+}
+
+void recursiveEvaluation(vector<Table>& relations, Rule& rule, int& passes) {
+    bool match = false;
+    vector<Table> oldRelations = relations;
+    while(!match) {
+        vector<Table> predicateTables;
+        
+        Table& table = relations.at(returnRelationsIndex(relations, rule.headPredicate.id.toString()));
+        
+        populatePredicateTables(rule, relations, predicateTables);
+        
+        joinPredicateTables(predicateTables);
+        
+        vector<string> names;
+        
+        for(Id id : rule.headPredicate.ids) {
+            names.push_back(id.toString());
+        }
+        
+        Table& completePredTable = predicateTables.at(0);
+        
+        completePredTable = completePredTable.project(names);
+        
+        Header temp = table.header;
+        table.header.clear();
+        
+        for(string name : names) {
+            table.header.push_back(name);
+        }
+        
+        table = table.makeUnion(completePredTable);
+        
+        table.header = temp;
+        
+        match = relationsMatch(oldRelations, relations);
+        
+        oldRelations = relations;
+        passes++;
+    }
+}
+
+void singleEvaluation(Rule& rule, vector<Table>& relations, int& passes) {
+    vector<Table> predicateTables;
+    
+    Table& table = relations.at(returnRelationsIndex(relations, rule.headPredicate.id.toString()));
+    
+    populatePredicateTables(rule, relations, predicateTables);
+    
+    joinPredicateTables(predicateTables);
+    
+    vector<string> names;
+    
+    for(Id id : rule.headPredicate.ids) {
+        names.push_back(id.toString());
+    }
+    
+    Table& completePredTable = predicateTables.at(0);
+    
+    completePredTable = completePredTable.project(names);
+    
+    Header temp = table.header;
+    table.header.clear();
+    
+    for(string name : names) {
+        table.header.push_back(name);
+    }
+    
+    table = table.makeUnion(completePredTable);
+    
+    table.header = temp;
+    passes++;
+}
+
+void processRules(DatalogProgram& datalogProgram, vector<Table>& relations) {
+    map<int, Rule> rulesMap = createRulesMap(datalogProgram);
+    Graph graph = createRulesGraph(datalogProgram, rulesMap);
+    
+    vector<vector<int>> sccs = graph.getSCCs();
+    
+    graph.print();
+    cout << endl;
+    
+    cout << "Rule Evaluation" << endl;
+    for(vector<int> sccVector : sccs) {
+        if((int) sccVector.size() > 1) {
+            fixedPointEvaluation(datalogProgram, rulesMap, sccVector, relations);
+        }else {
+            int passes = 0;
+            
+            int index = sccVector.at(0);
+            Rule rule = rulesMap.at(index);
+            
+            bool recursive = false;
+            
+            for(Predicate predicate : rule.predicateList) {
+                if(rule.headPredicate.id.toString() == predicate.id.toString()) {
+                    recursive = true;
+                    break;
+                }
+            }
+            
+            if(recursive) {
+                recursiveEvaluation(relations, rule, passes);
+            }else {
+                singleEvaluation(rule, relations, passes);
+            }
+            cout << passes << " passes: R" << returnRuleNumber(datalogProgram, rule) << endl;
+        }
+    }
+    cout << endl;
+    delete[] graph.adj;
 }
 
 int main(int argc, const char * argv[]) {
@@ -224,16 +377,17 @@ int main(int argc, const char * argv[]) {
     }
 
     vector<Table> relations;
-    
+
     for(int k = 0; k < (int) datalogProgram.schemes.listOfSchemes.size(); k++) {
         Table table = Table(datalogProgram.schemes.listOfSchemes.at(k).id.toString());
         prepareHeader(datalogProgram, table, k);
         prepareFacts(datalogProgram, table, k);
         relations.push_back(table);
     }
+
+    processRules(datalogProgram, relations); // This will change
     
-    int passes = processRules(datalogProgram, relations);
-    cout << "Schemes populated after " << passes << " passes through the Rules." << endl;
+    cout << "Query Evaluation" << endl;
     processQueries(datalogProgram, relations);
     
     return 0;
